@@ -1,5 +1,5 @@
 site_name: Darrell Ross
-site_url: https://dev.eukota.com
+site_url: https://eukota.github.io
 nav:
     - Home: index.md
     - About: about.md
