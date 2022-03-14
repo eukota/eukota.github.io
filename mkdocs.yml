@@ -31,8 +31,8 @@ nav:
 #####################
 # THEME
 theme:
-    name: null
-    custom_dir: docs/material
+    name: material
+    #custom_dir: docs/material
 
     # 404 page
     static_templates:
