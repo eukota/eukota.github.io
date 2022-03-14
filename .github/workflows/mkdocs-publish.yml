@@ -12,8 +12,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  # This workflow contains a single job called "deploy"
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -21,6 +21,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
 
       - name: Install pip
         run: python3 -m pip install --upgrade pip setuptools wheel
@@ -29,6 +32,7 @@ jobs:
         run: |
           pip install mkdocs
           pip install mkdocs-macros-plugin
+          pip install mkdocs-material
                     
       - name: MkDocs build 
         run: mkdocs build

@@ -1,4 +1,4 @@
-# eukota.github.io
+# Hello
 
 After years of ignoring my website and really being at a loss for what to do with it, I have decided to migrate it to MkDocs running on GitHub Pages.
 

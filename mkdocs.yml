@@ -1,6 +1,85 @@
+#####################
+# BASICS
 site_name: Darrell Ross
 site_url: https://eukota.github.io
+markdown_extensions:
+    - smarty
+    - meta
+
+#####################
+# NAV 
 nav:
-    - Home: index.md
-    - About: about.md
-theme: readthedocs
+- Home: index.md
+- Resume: resume.md
+- Artist:
+    - Musician: music/bands.md
+    - Instrumentalist: music/instruments.md
+    - Origami: misc/origami.md
+- Gardener: gardening.md
+- Engineer & Mathematician:
+    - Degrees:
+        - BSCE: engineering/bsce.md
+        - MS in Math: engineering/msmath.md
+        - MSEE: engineering/msee.md
+    - HSU SERC: engineering/hsuserc.md
+- Father: music/kids.md
+- Code:
+    - LaTeX: code/latex.md
+    - MkDocs: code/mkdocs.md
+    - Markdown Cheatsheet: code/markdown_sample.md
+
+#####################
+# THEME
+theme:
+    name: null
+    custom_dir: docs/material
+
+    # 404 page
+    static_templates:
+        - 404.html
+
+    # Necessary for search to work properly
+    include_search_page: false
+    search_index_only: true
+
+    # Default values, taken from mkdocs_theme.yml, necessary for github pages deployment
+    language: en
+    font:
+        text: Roboto
+        code: Roboto Mono
+    favicon: assets/images/favicon.png
+    icon:
+        logo: logo
+    palette:
+        - scheme: default
+          primary: deep purple
+          accent: green
+          toggle:
+            icon: material/toggle-switch-off-outline 
+            name: Switch to dark mode
+        - scheme: slate 
+          toggle:
+            icon: material/toggle-switch
+            name: Switch to light mode
+
+    # Additional Values
+    features:
+        - navigation.instant
+        - navigation.tracking
+        - toc.follow
+        - toc.integrate
+        - navigation.top
+
+#####################
+# EXTRAS
+extra:
+    social:
+        - icon: fontawesome/brands/linkedin
+          link: https://www.linkedin.com/in/darrellaross/
+        - icon: fontawesome/brands/github
+          link: https://www.github.com/eukota
+
+#####################
+# PLUGINS
+plugins:
+    - search
