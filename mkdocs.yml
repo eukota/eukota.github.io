@@ -11,18 +11,15 @@ markdown_extensions:
 nav:
 - Home: index.md
 - Resume: resume.md
-- Artist:
-    - Musician: music/bands.md
-    - Instrumentalist: music/instruments.md
-    - Origami: misc/origami.md
-- Gardener: gardening.md
-- Engineer & Mathematician:
-    - Degrees:
-        - BSCE: engineering/bsce.md
-        - MS in Math: engineering/msmath.md
-        - MSEE: engineering/msee.md
-    - HSU SERC: engineering/hsuserc.md
-- Father: music/kids.md
+- School: school/degrees.md
+- Personal:
+    - Bands: personal/bands.md
+    - Instruments: personal/instruments.md
+    - Origami: personal/origami.md
+    - Bubbles: personal/bubbles.md
+    - Gardening: personal/gardening.md
+    - Father: personal/kids.md
+- Sites: sites/sites.md
 - Code:
     - LaTeX: code/latex.md
     - MkDocs: code/mkdocs.md
@@ -67,11 +64,12 @@ theme:
         - navigation.instant
         - navigation.tracking
         - toc.follow
-        - toc.integrate
+        #- toc.integrate
         - navigation.top
 
 #####################
 # EXTRAS
+use_directory_urls: false # enabled the direct html link for the Guntley PV Barn
 extra:
     social:
         - icon: fontawesome/brands/linkedin
