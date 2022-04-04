@@ -12,6 +12,6 @@ I built this site along with two friends when we were in High School around 1997
 
 ## Solar Barn - Circa 2006
 
-While attending Humbodlt State University, I took this amazing class titled Appropriate Technology from Lonny Grafman. There were many amazing things about that class. One of the coolest was Lonny allowing us to turn in our final report in almost any form of media we wished - from paper reports, to presentations, to websites. I built this website and I still have it. And I still enjoy referring people to it too.
+While attending [Humbodlt State University](https://www.humboldt.edu/ "Cal Poly Humboldt"), I took a class titled [Engr305: Appropriate Technology](https://www.appropedia.org/Engr305_Appropriate_Technology_Projects) from [Lonny Grafman](https://www.linkedin.com/in/lonnygrafman/). There were many amazing things about that class. One of the coolest was Lonny allowing us to turn in our final report in almost any form of media we wished - from paper reports, to presentations, to websites. I built this website and I still have it. The site goes over the entire process of building out a small solar photovoltaic array of 480W supporting a 225 Amp Hr battery bank that is used to run the lighting in a barn. Topic covered include system sizing, panel angles, noon hour efficiency calculations, system wiring, and more. The site has turned out to be a great resource over time for myself in remembering the work and for others.
 
 [Visit PV Barn Website](pvbarn/index.html)
