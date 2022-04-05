@@ -2,10 +2,6 @@
 
 ## BSCE, [UCSC](https://www.ucsc.edu/ "University of California, Santa Cruz"), 2002
 
-**TODO**
-
-* Link to my projects...
-
 ## MS in Math, [Cal Poly Humboldt](http://humboldt.edu "formerly Humboldt State University"), 2009
 
 **TODO**

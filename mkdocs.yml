@@ -20,10 +20,13 @@ nav:
     - Gardening: personal/gardening.md
     - Family: personal/family.md
 - Sites: sites/sites.md
-- Code:
-    - LaTeX: code/latex.md
-    - MkDocs: code/mkdocs.md
-    - Markdown Cheatsheet: code/markdown_sample.md
+- Engineering:
+    - UCSC Courses: engineering/ucsc_courses.md
+    - HSU Courses: engineering/hsu_courses.md
+    - UW Courses: engineering/uw_courses.md
+    - LaTeX: engineering/latex.md
+    - MkDocs: engineering/mkdocs.md
+    - Markdown Cheatsheet: engineering/markdown_sample.md
 
 #####################
 # THEME
