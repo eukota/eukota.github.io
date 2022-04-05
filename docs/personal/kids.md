@@ -1,5 +1,0 @@
-# Kids
-
-* Edward
-* Morgan
-* Harmony
