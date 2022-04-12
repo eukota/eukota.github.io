@@ -26,6 +26,10 @@ nav:
     - UW Courses: engineering/uw_courses.md
     - LaTeX: engineering/latex.md
     - MkDocs: engineering/mkdocs.md
+    - Water Tank Meter: engineering/water_tank_meter.md
+    - Microbit: engineering/microbit.md
+    - Circuit Playground: engineering/circuit_playground.md
+    - Electronics Workbench: engineering/workbench.md
     - Markdown Cheatsheet: engineering/markdown_sample.md
 
 #####################
