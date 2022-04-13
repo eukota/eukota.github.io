@@ -57,7 +57,7 @@ I completed an MSEE at the [University of Washington](https://uw.edu/) from the 
 
 **Description** - Servo control requires proper knowledge and understanding of electric machines and power electronic drives. This course gives fundamental principles of AC and DC drive systems including machine structures and driver topologies. The fundamentals of brush DC, Brushless DC (BLDC), PM synchronous, and induction machines are explored. In addition, inverter topologies and control techniques are presented. The course begins with the basics of DC machines and extends to the concept of field orientation in AC machines.
 
-**Thoughts** - This was the second course I took taught by [Nicholas Nagel](https://www.linkedin.com/in/nick-nagel-13741827/) and it was incredibly challenging and rewarding. The final project involved building out an electric motor controller for a Tesla. Super cool. We got to use a power electronics simulator called [PLECS by Plexim](https://www.plexim.com/products/plecs) which was really amazing.
+**Thoughts** - This was the second course I took taught by [Nicholas Nagel](https://www.linkedin.com/in/nick-nagel-13741827/) and it was incredibly challenging and rewarding. The final project involved building out an electric motor controller for a Tesla induction machine. Super cool. We got to use a power electronics simulator called [PLECS by Plexim](https://www.plexim.com/products/plecs) which was also amazing to work with.
 
 * [EE 560 Tesla Controller Report](uw/EE560/Darrell_UW_EE560_TeslaController_Report.pdf)
 
@@ -65,6 +65,6 @@ I completed an MSEE at the [University of Washington](https://uw.edu/) from the 
 
 **Description** - Introduction, evolution, and overview of parallel computing and overview to OpenCL. OpenCL host and kernel programming details, host and kernel programming details. Parallel software and performance theory, parallel FFT on GPU. Case studies in machine learning, image processing, and scientific visualization with GPUs and OpenCL.
 
-**Thoughts** - This was a custom class in which we learned to write OpenCL for GPU programming. I bought a laptop with a GPU that I could program so that I could avoid going to the lab. I still have that laptop. It is currently my electronics workbench lab machine. For my final project, I worked with a classmate Eric Wilson to use parallel programming to downsample a radar sample.
+**Thoughts** - This was a custom class in which we learned to write OpenCL for GPU programming. I bought a laptop with a GPU that I could program so that I could avoid going to the lab. I still have that laptop. It is currently my electronics workbench lab machine. For my final project, I worked with a classmate Eric Wilson to use parallel programming to downsample a radar data.
 
-* [EE 590 Radar Resampling Report](uw/EE590/Darrell_UW_EE590_RadarResampling_Report)
+* [EE 590 Radar Resampling Report](uw/EE590/Darrell_UW_EE590_RadarResampling_Report.pdf)
