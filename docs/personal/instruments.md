@@ -8,7 +8,7 @@ I first began learning trombone while attending Marengo Elementary School in Sou
 
 ## 1992 - Baritone Horn, Alto Sax, Clarinet, Snare Drum, Flute, Piano, Guitar, Recorder
 
-This was a strange time for me. We relocated from South Pasadena where introductions to music included a robust program and 5th grade was the last elementary grade level. By contract, Anderson Valley had 6th grade as the last elementary grade level - so I inadvertently graduated from elementary school twice! The music program was not as robust and the song we played vastly simpler. Worse, the music instructor did not teach trombone before 7th grade.
+This was a strange time for me. We relocated from South Pasadena where introductions to music included a robust program and 5th grade was the last elementary grade level. By contrast, Anderson Valley had 6th grade as the last elementary grade level - so I inadvertently graduated from elementary school twice! The music program was not as robust and the songs we played vastly simpler. Worse, the music instructor did not teach trombone before 7th grade.
 
 My parents enrolled me in piano lessons and I began self-teaching recorder.
 
@@ -22,7 +22,7 @@ In 1997, the band director for Mendocino HS, Bob Ayres, retired. He agreed to ta
 
 ## 2001 - Djembe
 
-In the second half of my time at UCSC, I did a multitude of extra curricular activities. There was an afro-cuban drum class on campus which connected me with a West African drum class in town. I got to play accompanyment for a West African dance class from time to time which was an invigorating experience every time.
+In the second half of my time at UCSC, I did a multitude of extra-curricular activities. There was an afro-cuban drum class on campus which connected me with a West African drum class in town. I got to play accompanyment for a West African dance class from time to time which was an invigorating experience every time.
 
 When I graduated from UCSC in 2002, I bought myself a nice Djembe from New Guinea along with a really nice carrying case.
 
