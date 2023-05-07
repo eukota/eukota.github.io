@@ -5,6 +5,19 @@ site_url: https://eukota.github.io
 markdown_extensions:
     - smarty
     - meta
+    - attr_list
+    - md_in_html
+    - pymdownx.emoji:
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
+    - pymdownx.superfences
+    - pymdownx.tabbed:
+        alternate_style: true
+    - admonition
+    - pymdownx.details
+
+# Quotes uses Admonitions
+# https://squidfunk.github.io/mkdocs-material/reference/admonitions/
 
 #####################
 # NAV 
@@ -24,13 +37,30 @@ nav:
     - UCSC Courses: engineering/ucsc_courses.md
     - HSU Courses: engineering/hsu_courses.md
     - UW Courses: engineering/uw_courses.md
+    - Training: engineering/training.md
+    - Scrum Framework: engineering/scrum_framework.md
+    - Scrum Framework Minimums: engineering/scrum_framework_minimums.md
     - LaTeX: engineering/latex.md
-    - MkDocs: engineering/mkdocs.md
     - Water Tank Meter: engineering/water_tank_meter.md
     - Microbit: engineering/microbit.md
     - Circuit Playground: engineering/circuit_playground.md
     - Electronics Workbench: engineering/workbench.md
+    - MkDocs: engineering/mkdocs.md
     - Markdown Cheatsheet: engineering/markdown_sample.md
+- Intentional Documentation:
+    - Intentional Documentation: documentation/intentional_documentation.md
+    - Per Page:
+        - Page Tree: documentation/per_page/page_tree.md
+        - Table of Contents: documentation/per_page/toc.md
+        - TOC Driven Documentation: documentation/per_page/toc_driven.md
+        - Reviews: documentation/per_page/reviews.md
+    - Per Project: 
+        - Page Style Guide: documentation/per_project/page_style_guide.md
+        - Audience Page Map: documentation/per_project/audience_page_map.md
+        - Support Feedback Loop: documentation/per_project/support_feedback_loop.md
+        - Curators: documentation/per_project/curators.md
+    - Patterns: documentation/patterns.md
+    - Antipatterns: documentation/antipatterns.md
 
 #####################
 # THEME
@@ -88,3 +118,5 @@ extra:
 # PLUGINS
 plugins:
     - search
+    - glightbox
+    #- table-reader
