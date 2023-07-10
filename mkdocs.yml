@@ -38,6 +38,7 @@ nav:
     - HSU Courses: engineering/hsu_courses.md
     - UW Courses: engineering/uw_courses.md
     - Training: engineering/training.md
+    - Automation Phases: engineering/automation_phases.md
     - Scrum Framework: engineering/scrum_framework.md
     - Scrum Framework Minimums: engineering/scrum_framework_minimums.md
     - LaTeX: engineering/latex.md
