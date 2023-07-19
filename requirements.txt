@@ -1,0 +1,9 @@
+semver==2.13.0
+mkdocs==1.4.3
+mkdocs-glightbox==0.3.4
+mkdocs-macros-plugin==1.0.1
+mkdocs-material==9.1.15
+mkdocs-material-extensions==1.1.1
+mkdocs-minify-plugin==0.6.4
+mkdocs-redirects==1.2.0
+pymdown-extensions==10.0.1
