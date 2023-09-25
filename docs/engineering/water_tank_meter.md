@@ -44,3 +44,10 @@ My Dad got a new router and this required me to update the system to connect to 
 1. Adding commands to the Slack bot
 1. Updating the output to calculate approximate water remaining instead of the current "inches above water" that the sensor is outputting.
 1. Build a GrafiteDB to log the data to and put Grafana in front of it
+
+## 2023 Update
+
+I applied a few updates
+
+1. Added gallons printout - oddly Raspian python was not happy with f-strings
+1. Refactored a lot of the python to be more utility-like - but also wrote more hacky things

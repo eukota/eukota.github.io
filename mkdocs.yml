@@ -110,6 +110,8 @@ theme:
 use_directory_urls: false # enabled the direct html link for the Guntley PV Barn
 extra:
     social:
+        - icon: fontawesome/brands/tiktok
+          link: https://www.tiktok.com/@eukota
         - icon: fontawesome/brands/linkedin
           link: https://www.linkedin.com/in/darrellaross/
         - icon: fontawesome/brands/github
