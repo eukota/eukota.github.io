@@ -27,7 +27,7 @@ I completed an MSEE at the [University of Washington](https://uw.edu/) from the 
 * [EE 553 Homework 6 Report](uw/EE553/Darrell_UW_EE553_HW6.pdf) - cool Tikz plots in LaTeX
 * [EE 553 Economic Dispatch Final Project Report](uw/EE553/Darrell_UW_EE553_EconomicDispatch_FinalReport.pdf)
 
-## EE 557 - Dyanics of Controlled Systems
+## EE 557 - Dynamics of Controlled Systems
 
 **Description** - Explores control techniques for high precision motion control. Covers sate variable feedback of linear and nonlinear, multivariable systems in depth. Uses physical system modeling, graphical analysis, and numerical analysis to describe system performance. Uses simulation mini-projects to emphasize the dynamics of controlled systems and their performance.
 
