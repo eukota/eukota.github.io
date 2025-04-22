@@ -44,6 +44,7 @@ nav:
     - LaTeX: engineering/latex.md
     - Water Tank Meter: engineering/water_tank_meter.md
     - Microbit: engineering/microbit.md
+    - Minecraft Server: engineering/minecraft.md
     - Circuit Playground: engineering/circuit_playground.md
     - Electronics Workbench: engineering/workbench.md
     - MkDocs: engineering/mkdocs.md
