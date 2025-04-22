@@ -1,7 +1,7 @@
 !!! note ""
     Automation is a journey, not a destination. Using a phased approach like this can help to delineate stages within the journey. If published internally, such a phase set can also help clients to understand the state of systems. The phases can be enhanced by adopting best practices or standards to go along with each phase.
 <center>
-![](../assets/images/automation_phases.png){ style="width:70%"}
+![Automation Phases](../assets/images/automation_phases.png){ style="width:70%"}
 </center>
 ## Phase 1: Ad-Hoc
 
