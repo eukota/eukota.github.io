@@ -1,4 +1,4 @@
-FROM squidfunk/mkdocs-material:latest
+FROM squidfunk/mkdocs-material:8.5.11
 
 RUN apk add --update bash jq curl &&\
     pip3 install --upgrade pip mkdocs-macros-plugin mkdocs-glightbox
