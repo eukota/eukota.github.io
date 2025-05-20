@@ -28,12 +28,10 @@ jobs:
       - name: Install pip
         run: python3 -m pip install --upgrade pip setuptools wheel
 
-      - name: Install MkDocs
+      - name: Install MkDocs and Depencies
         run: |
-          pip install mkdocs
-          pip install mkdocs-macros-plugin
-          pip install mkdocs-material
-          pip install mkdocs-glightbox
+          pip install mkdocs==1.4.3
+          pip install -r requirements.txt
 
       - name: MkDocs build 
         run: mkdocs build
