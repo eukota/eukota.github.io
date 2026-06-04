@@ -29,30 +29,30 @@ class UnwindApplet {
 
   init() {
     // Initialize colors once - will be used throughout animation
-    // Red strand (indices 0-23)
-    for (let i = 0; i <= 23; i++) {
+    // Red strand (indices 0-15, setup in setupStructure)
+    for (let i = 0; i <= 15; i++) {
       this.originalPoints[i][3] = 200;
       this.originalPoints[i][4] = 0;
       this.originalPoints[i][5] = 0;
       this.originalPoints[i][6] = 22;
     }
 
-    // Blue strand (indices 24-47)
-    for (let i = 24; i <= 47; i++) {
+    // Blue strand (indices 24-39, setup in setupStructure)
+    for (let i = 24; i <= 39; i++) {
       this.originalPoints[i][3] = 0;
       this.originalPoints[i][4] = 0;
       this.originalPoints[i][5] = 200;
       this.originalPoints[i][6] = 18;
     }
 
-    // Nucleotides (indices 48-71) - assign random colors once
+    // Nucleotides (indices 48-63) - assign random colors once
     const colors = [
       [100, 100, 0],    // yellow
       [0, 100, 0],      // green
       [0, 100, 100],    // cyan
       [100, 0, 100]     // magenta
     ];
-    for (let i = 48; i <= 71; i++) {
+    for (let i = 48; i <= 63; i++) {
       const colorIdx = Math.floor(Math.random() * 4);
       this.originalPoints[i][3] = colors[colorIdx][0];
       this.originalPoints[i][4] = colors[colorIdx][1];
