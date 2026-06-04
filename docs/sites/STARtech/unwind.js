@@ -5,8 +5,8 @@ class UnwindApplet {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
 
-    // Initialize 64 points (0-15: strand1, 24-39: strand2, 48-63: nucleotides)
-    this.AMOUNT = 64;
+    // Initialize 80 points (0-15: strand1, 24-39: strand2, 48-63: nucleotides, 64-79: new strand)
+    this.AMOUNT = 80;
     this.points = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
     this.originalPoints = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
     this.order = Array(this.AMOUNT).fill(-200);
@@ -184,6 +184,8 @@ class UnwindApplet {
     }).then(() => {
       return this.animateSeparateVertical();
     }).then(() => {
+      return this.animateSlideInNewStrand();
+    }).then(() => {
       return this.animateRewind();
     });
   }
@@ -299,18 +301,18 @@ class UnwindApplet {
           return;
         }
 
-        // Separate strands horizontally - nucleotides stay visible between them
+        // Separate strands horizontally - nucleotides move WITH them
         for (let i = 0; i <= 15; i++) {
           if (i <= 5 || i === 7 || i === 9) {
             this.originalPoints[i][0] -= 3;
             this.originalPoints[i + 24][0] -= 3;
+            this.originalPoints[i + 48][0] -= 3;  // Nucleotides move with strands
           } else {
             this.originalPoints[i][0] += 3;
             this.originalPoints[i + 24][0] += 3;
+            this.originalPoints[i + 48][0] += 3;  // Nucleotides move with strands
           }
         }
-
-        // Nucleotides stay in place to show the ladder structure
 
         this.applyRotation();
         this.draw();
@@ -333,13 +335,47 @@ class UnwindApplet {
           return;
         }
 
-        // Separate strands vertically - reveals the nucleotide ladder
-        for (let i = 16; i <= 23; i++) {
+        // Separate strands vertically - nucleotides move WITH them
+        for (let i = 0; i <= 15; i++) {
           this.originalPoints[i][1] -= 3;
           this.originalPoints[i + 24][1] -= 3;
+          this.originalPoints[i + 48][1] -= 3;  // Nucleotides move with strands
         }
 
-        // Nucleotides stay in place, creating the "ladder" between separated strands
+        this.applyRotation();
+        this.draw();
+        frame++;
+        setTimeout(step, 100);
+      };
+
+      step();
+    });
+  }
+
+  animateSlideInNewStrand() {
+    return new Promise((resolve) => {
+      let frame = 0;
+      const totalFrames = 25;
+
+      const step = () => {
+        if (frame > totalFrames) {
+          resolve();
+          return;
+        }
+
+        // Slide new complementary strand in from left side
+        for (let i = 0; i <= 15; i += 2) {
+          // New strand slides in to align with nucleotides
+          const baseX = -300 + (frame * 12);  // Slide in from -300
+
+          this.originalPoints[i + 64][0] = baseX;
+          this.originalPoints[i + 64][1] = this.originalPoints[i][1] - 30;
+          this.originalPoints[i + 64][2] = this.originalPoints[i][2];
+
+          this.originalPoints[i + 65][0] = baseX;
+          this.originalPoints[i + 65][1] = this.originalPoints[i + 1][1] - 30;
+          this.originalPoints[i + 65][2] = this.originalPoints[i + 1][2];
+        }
 
         this.applyRotation();
         this.draw();
