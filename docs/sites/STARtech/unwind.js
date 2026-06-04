@@ -8,7 +8,12 @@ class UnwindApplet {
     // Initialize 72 points (nucleotides + backbone)
     this.AMOUNT = 72;
     this.points = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
+    this.originalPoints = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
     this.order = Array(this.AMOUNT).fill(-200);
+
+    // Rotation tracking (in degrees)
+    this.rotationXZ = 0;
+    this.rotationYZ = 0;
 
     // State
     this.mouseDown = false;
@@ -135,39 +140,13 @@ class UnwindApplet {
   }
 
   rotateXZ(dx) {
-    for (let i = 0; i < this.AMOUNT; i++) {
-      const b = this.points[i][0];
-      let c = this.points[i][2];
-
-      let an = Math.atan2(b, c) * 180 / Math.PI;
-      if (b < 0 && c >= 0) an += 360;
-      if (b < 0 && c < 0) an += 180;
-      if (b >= 0 && c < 0) an += 180;
-
-      const m = Math.sqrt(b * b + c * c);
-      an += dx;
-
-      this.points[i][0] = m * Math.sin(an * Math.PI / 180);
-      this.points[i][2] = m * Math.cos(an * Math.PI / 180);
-    }
+    this.rotationXZ += dx;
+    this.applyRotation();
   }
 
   rotateYZ(dy) {
-    for (let i = 0; i < this.AMOUNT; i++) {
-      const b = this.points[i][1];
-      let c = this.points[i][2];
-
-      let an = Math.atan2(b, c) * 180 / Math.PI;
-      if (b < 0 && c >= 0) an += 360;
-      if (b < 0 && c < 0) an += 180;
-      if (b >= 0 && c < 0) an += 180;
-
-      const m = Math.sqrt(b * b + c * c);
-      an += dy;
-
-      this.points[i][1] = m * Math.sin(an * Math.PI / 180);
-      this.points[i][2] = m * Math.cos(an * Math.PI / 180);
-    }
+    this.rotationYZ += dy;
+    this.applyRotation();
   }
 
   onMouseDown(e) {
@@ -219,15 +198,23 @@ class UnwindApplet {
 
     // First strand (indices 0-23)
     for (let i = -4 * dy; i <= 3 * dy; i += dy || 1) {
-      this.points[a][0] = i;
-      this.points[a][1] = 40 * Math.cos(b * Math.PI / 180);
-      this.points[a][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a][0] = i;
+      this.originalPoints[a][1] = 40 * Math.cos(b * Math.PI / 180);
+      this.originalPoints[a][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a][3] = 200;
+      this.originalPoints[a][4] = 0;
+      this.originalPoints[a][5] = 0;
+      this.originalPoints[a][6] = 22;
       a++;
       b += dx;
 
-      this.points[a][0] = i;
-      this.points[a][1] = 40 * Math.cos(c * Math.PI / 180);
-      this.points[a][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a][0] = i;
+      this.originalPoints[a][1] = 40 * Math.cos(c * Math.PI / 180);
+      this.originalPoints[a][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a][3] = 200;
+      this.originalPoints[a][4] = 0;
+      this.originalPoints[a][5] = 0;
+      this.originalPoints[a][6] = 22;
       a++;
       c += dx;
     }
@@ -237,28 +224,77 @@ class UnwindApplet {
     b = 135 + dx / 2 - 4 * dx;
     c = 45 + dx / 2 - 4 * dx;
     for (let i = -3.5 * dy; i <= 3.5 * dy; i += dy || 1) {
-      this.points[a + 24][0] = i;
-      this.points[a + 24][1] = 40 * Math.cos(b * Math.PI / 180);
-      this.points[a + 24][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a + 24][0] = i;
+      this.originalPoints[a + 24][1] = 40 * Math.cos(b * Math.PI / 180);
+      this.originalPoints[a + 24][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a + 24][3] = 0;
+      this.originalPoints[a + 24][4] = 0;
+      this.originalPoints[a + 24][5] = 200;
+      this.originalPoints[a + 24][6] = 18;
       a++;
       b += dx;
 
-      this.points[a + 24][0] = i;
-      this.points[a + 24][1] = 40 * Math.cos(c * Math.PI / 180);
-      this.points[a + 24][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a + 24][0] = i;
+      this.originalPoints[a + 24][1] = 40 * Math.cos(c * Math.PI / 180);
+      this.originalPoints[a + 24][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a + 24][3] = 0;
+      this.originalPoints[a + 24][4] = 0;
+      this.originalPoints[a + 24][5] = 200;
+      this.originalPoints[a + 24][6] = 18;
       a++;
       c += dx;
     }
 
     // Nucleotides (indices 48-71)
     for (let i = 0; i <= 15; i += 2) {
-      this.points[i + 48][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) / 3;
-      this.points[i + 48][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) / 3;
-      this.points[i + 48][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) / 3;
+      const color_idx = Math.floor(Math.random() * 4);
+      const colors = [
+        [100, 100, 0],
+        [0, 100, 0],
+        [0, 100, 100],
+        [100, 0, 100]
+      ];
 
-      this.points[i + 49][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) * 2 / 3;
-      this.points[i + 49][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) * 2 / 3;
-      this.points[i + 49][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) * 2 / 3;
+      this.originalPoints[i + 48][0] = this.originalPoints[i][0] + (this.originalPoints[i + 1][0] - this.originalPoints[i][0]) / 3;
+      this.originalPoints[i + 48][1] = this.originalPoints[i][1] + (this.originalPoints[i + 1][1] - this.originalPoints[i][1]) / 3;
+      this.originalPoints[i + 48][2] = this.originalPoints[i][2] + (this.originalPoints[i + 1][2] - this.originalPoints[i][2]) / 3;
+      [this.originalPoints[i + 48][3], this.originalPoints[i + 48][4], this.originalPoints[i + 48][5]] = colors[color_idx];
+      this.originalPoints[i + 48][6] = 18;
+
+      this.originalPoints[i + 49][0] = this.originalPoints[i][0] + (this.originalPoints[i + 1][0] - this.originalPoints[i][0]) * 2 / 3;
+      this.originalPoints[i + 49][1] = this.originalPoints[i][1] + (this.originalPoints[i + 1][1] - this.originalPoints[i][1]) * 2 / 3;
+      this.originalPoints[i + 49][2] = this.originalPoints[i][2] + (this.originalPoints[i + 1][2] - this.originalPoints[i][2]) * 2 / 3;
+      [this.originalPoints[i + 49][3], this.originalPoints[i + 49][4], this.originalPoints[i + 49][5]] = colors[3 - color_idx];
+      this.originalPoints[i + 49][6] = 18;
+    }
+
+    this.applyRotation();
+  }
+
+  applyRotation() {
+    for (let i = 0; i < this.AMOUNT; i++) {
+      const orig = this.originalPoints[i];
+      let x = orig[0];
+      let y = orig[1];
+      let z = orig[2];
+
+      // Apply XZ rotation (yaw)
+      const angle1 = this.rotationXZ * Math.PI / 180;
+      const x1 = x * Math.cos(angle1) - z * Math.sin(angle1);
+      const z1 = x * Math.sin(angle1) + z * Math.cos(angle1);
+
+      // Apply YZ rotation (pitch) on rotated coordinates
+      const angle2 = this.rotationYZ * Math.PI / 180;
+      const y2 = y * Math.cos(angle2) - z1 * Math.sin(angle2);
+      const z2 = y * Math.sin(angle2) + z1 * Math.cos(angle2);
+
+      this.points[i][0] = x1;
+      this.points[i][1] = y2;
+      this.points[i][2] = z2;
+      this.points[i][3] = orig[3];
+      this.points[i][4] = orig[4];
+      this.points[i][5] = orig[5];
+      this.points[i][6] = orig[6];
     }
   }
 
@@ -275,7 +311,7 @@ class UnwindApplet {
         this.setupStructure(dx);
         this.draw();
         dx -= 2;
-        requestAnimationFrame(step);
+        setTimeout(step, 100);
       };
 
       step();
@@ -295,7 +331,7 @@ class UnwindApplet {
         this.setupStructure(dx);
         this.draw();
         dx += 2;
-        requestAnimationFrame(step);
+        setTimeout(step, 100);
       };
 
       step();
