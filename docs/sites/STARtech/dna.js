@@ -77,7 +77,7 @@ class DNAApplet {
       c += 45;
     }
 
-    // Create nucleotides connecting strands
+    // Create nucleotides connecting strands (indices 32-47 for DNA)
     for (let i = 0; i <= 15; i += 2) {
       const color_idx = Math.floor(Math.random() * 4);
       const colors = [
