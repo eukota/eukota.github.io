@@ -132,11 +132,8 @@ class DNAApplet {
 
   setupEventListeners() {
     this.canvas.addEventListener('mousedown', (e) => this.onMouseDown(e));
-    this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
-    this.canvas.addEventListener('mouseup', () => {
-      this.mouseDown = false;
-    });
-    this.canvas.addEventListener('mouseleave', () => {
+    document.addEventListener('mousemove', (e) => this.onMouseMove(e));
+    document.addEventListener('mouseup', () => {
       this.mouseDown = false;
     });
   }
@@ -216,26 +213,21 @@ class DNAApplet {
 
   onMouseDown(e) {
     this.mouseDown = true;
-    const rect = this.canvas.getBoundingClientRect();
-    this.oldx = e.clientX - rect.left;
-    this.oldy = e.clientY - rect.top;
+    this.oldx = e.clientX;
+    this.oldy = e.clientY;
   }
 
   onMouseMove(e) {
     if (!this.mouseDown) return;
 
-    const rect = this.canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const dx = x - this.oldx;
-    const dy = y - this.oldy;
+    const dx = e.clientX - this.oldx;
+    const dy = e.clientY - this.oldy;
 
     this.rotateXZ(-dx);
     this.rotateYZ(-dy);
 
-    this.oldx = x;
-    this.oldy = y;
+    this.oldx = e.clientX;
+    this.oldy = e.clientY;
 
     this.draw();
   }
