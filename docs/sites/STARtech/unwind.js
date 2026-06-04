@@ -28,34 +28,36 @@ class UnwindApplet {
   }
 
   init() {
-    // Initialize point coordinates and colors
+    // Initialize colors once - will be used throughout animation
     // Red strand (indices 0-23)
     for (let i = 0; i <= 23; i++) {
-      this.points[i][3] = 200; // red
-      this.points[i][4] = 0;
-      this.points[i][5] = 0;
-      this.points[i][6] = 22; // diameter
+      this.originalPoints[i][3] = 200;
+      this.originalPoints[i][4] = 0;
+      this.originalPoints[i][5] = 0;
+      this.originalPoints[i][6] = 22;
     }
 
     // Blue strand (indices 24-47)
     for (let i = 24; i <= 47; i++) {
-      this.points[i][3] = 0;
-      this.points[i][4] = 0;
-      this.points[i][5] = 200; // blue
-      this.points[i][6] = 18;
+      this.originalPoints[i][3] = 0;
+      this.originalPoints[i][4] = 0;
+      this.originalPoints[i][5] = 200;
+      this.originalPoints[i][6] = 18;
     }
 
-    // Nucleotides (indices 48-71) - random colors
+    // Nucleotides (indices 48-71) - assign random colors once
+    const colors = [
+      [100, 100, 0],    // yellow
+      [0, 100, 0],      // green
+      [0, 100, 100],    // cyan
+      [100, 0, 100]     // magenta
+    ];
     for (let i = 48; i <= 71; i++) {
-      const a = Math.floor(Math.random() * 4);
-      const colors = [
-        [100, 100, 0],    // yellow
-        [0, 100, 0],      // green
-        [0, 100, 100],    // cyan
-        [100, 0, 100]     // magenta
-      ];
-      [this.points[i][3], this.points[i][4], this.points[i][5]] = colors[a];
-      this.points[i][6] = 18;
+      const colorIdx = Math.floor(Math.random() * 4);
+      this.originalPoints[i][3] = colors[colorIdx][0];
+      this.originalPoints[i][4] = colors[colorIdx][1];
+      this.originalPoints[i][5] = colors[colorIdx][2];
+      this.originalPoints[i][6] = 18;
     }
   }
 
@@ -201,20 +203,12 @@ class UnwindApplet {
       this.originalPoints[a][0] = i;
       this.originalPoints[a][1] = 40 * Math.cos(b * Math.PI / 180);
       this.originalPoints[a][2] = 40 * Math.sin(b * Math.PI / 180);
-      this.originalPoints[a][3] = 200;
-      this.originalPoints[a][4] = 0;
-      this.originalPoints[a][5] = 0;
-      this.originalPoints[a][6] = 22;
       a++;
       b += dx;
 
       this.originalPoints[a][0] = i;
       this.originalPoints[a][1] = 40 * Math.cos(c * Math.PI / 180);
       this.originalPoints[a][2] = 40 * Math.sin(c * Math.PI / 180);
-      this.originalPoints[a][3] = 200;
-      this.originalPoints[a][4] = 0;
-      this.originalPoints[a][5] = 0;
-      this.originalPoints[a][6] = 22;
       a++;
       c += dx;
     }
@@ -227,45 +221,25 @@ class UnwindApplet {
       this.originalPoints[a + 24][0] = i;
       this.originalPoints[a + 24][1] = 40 * Math.cos(b * Math.PI / 180);
       this.originalPoints[a + 24][2] = 40 * Math.sin(b * Math.PI / 180);
-      this.originalPoints[a + 24][3] = 0;
-      this.originalPoints[a + 24][4] = 0;
-      this.originalPoints[a + 24][5] = 200;
-      this.originalPoints[a + 24][6] = 18;
       a++;
       b += dx;
 
       this.originalPoints[a + 24][0] = i;
       this.originalPoints[a + 24][1] = 40 * Math.cos(c * Math.PI / 180);
       this.originalPoints[a + 24][2] = 40 * Math.sin(c * Math.PI / 180);
-      this.originalPoints[a + 24][3] = 0;
-      this.originalPoints[a + 24][4] = 0;
-      this.originalPoints[a + 24][5] = 200;
-      this.originalPoints[a + 24][6] = 18;
       a++;
       c += dx;
     }
 
-    // Nucleotides (indices 48-71)
+    // Nucleotides (indices 48-71) - only update coordinates, colors stay the same
     for (let i = 0; i <= 15; i += 2) {
-      const color_idx = Math.floor(Math.random() * 4);
-      const colors = [
-        [100, 100, 0],
-        [0, 100, 0],
-        [0, 100, 100],
-        [100, 0, 100]
-      ];
-
       this.originalPoints[i + 48][0] = this.originalPoints[i][0] + (this.originalPoints[i + 1][0] - this.originalPoints[i][0]) / 3;
       this.originalPoints[i + 48][1] = this.originalPoints[i][1] + (this.originalPoints[i + 1][1] - this.originalPoints[i][1]) / 3;
       this.originalPoints[i + 48][2] = this.originalPoints[i][2] + (this.originalPoints[i + 1][2] - this.originalPoints[i][2]) / 3;
-      [this.originalPoints[i + 48][3], this.originalPoints[i + 48][4], this.originalPoints[i + 48][5]] = colors[color_idx];
-      this.originalPoints[i + 48][6] = 18;
 
       this.originalPoints[i + 49][0] = this.originalPoints[i][0] + (this.originalPoints[i + 1][0] - this.originalPoints[i][0]) * 2 / 3;
       this.originalPoints[i + 49][1] = this.originalPoints[i][1] + (this.originalPoints[i + 1][1] - this.originalPoints[i][1]) * 2 / 3;
       this.originalPoints[i + 49][2] = this.originalPoints[i][2] + (this.originalPoints[i + 1][2] - this.originalPoints[i][2]) * 2 / 3;
-      [this.originalPoints[i + 49][3], this.originalPoints[i + 49][4], this.originalPoints[i + 49][5]] = colors[3 - color_idx];
-      this.originalPoints[i + 49][6] = 18;
     }
 
     this.applyRotation();
