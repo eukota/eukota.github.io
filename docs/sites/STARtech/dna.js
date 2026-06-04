@@ -231,8 +231,8 @@ class DNAApplet {
     const dx = x - this.oldx;
     const dy = y - this.oldy;
 
-    this.rotateXZ(dx);
-    this.rotateYZ(dy);
+    this.rotateXZ(-dx);
+    this.rotateYZ(-dy);
 
     this.oldx = x;
     this.oldy = y;
