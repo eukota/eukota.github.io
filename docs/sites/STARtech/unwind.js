@@ -5,8 +5,8 @@ class UnwindApplet {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
 
-    // Initialize 48 points (16 strand1 + 16 strand2 + 16 nucleotides)
-    this.AMOUNT = 48;
+    // Initialize 64 points (0-15: strand1, 24-39: strand2, 48-63: nucleotides)
+    this.AMOUNT = 64;
     this.points = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
     this.originalPoints = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
     this.order = Array(this.AMOUNT).fill(-200);
