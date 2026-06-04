@@ -187,7 +187,11 @@ class UnwindApplet {
   }
 
   animate() {
-    this.animateUnwindAndSeparate().then(() => {
+    this.animateUnwind().then(() => {
+      return this.animateSeparateHorizontal();
+    }).then(() => {
+      return this.animateSeparateVertical();
+    }).then(() => {
       return this.animateRewind();
     });
   }
@@ -272,7 +276,7 @@ class UnwindApplet {
     }
   }
 
-  animateUnwindAndSeparate() {
+  animateUnwind() {
     return new Promise((resolve) => {
       let dx = 46;
 
@@ -285,6 +289,66 @@ class UnwindApplet {
         this.setupStructure(dx);
         this.draw();
         dx -= 2;
+        setTimeout(step, 100);
+      };
+
+      step();
+    });
+  }
+
+  animateSeparateHorizontal() {
+    return new Promise((resolve) => {
+      let frame = 0;
+      const totalFrames = 20;
+
+      const step = () => {
+        if (frame > totalFrames) {
+          resolve();
+          return;
+        }
+
+        for (let i = 0; i <= 15; i++) {
+          if (i <= 5 || i === 7 || i === 9) {
+            this.originalPoints[i][0] -= 3;
+            this.originalPoints[i + 24][0] -= 3;
+            this.originalPoints[i + 48][0] -= 3;
+          } else {
+            this.originalPoints[i][0] += 3;
+            this.originalPoints[i + 24][0] += 3;
+            this.originalPoints[i + 48][0] += 3;
+          }
+        }
+
+        this.applyRotation();
+        this.draw();
+        frame++;
+        setTimeout(step, 100);
+      };
+
+      step();
+    });
+  }
+
+  animateSeparateVertical() {
+    return new Promise((resolve) => {
+      let frame = 0;
+      const totalFrames = 35;
+
+      const step = () => {
+        if (frame > totalFrames) {
+          resolve();
+          return;
+        }
+
+        for (let i = 16; i <= 23; i++) {
+          this.originalPoints[i][1] -= 3;
+          this.originalPoints[i + 24][1] -= 3;
+          this.originalPoints[i + 48][1] -= 3;
+        }
+
+        this.applyRotation();
+        this.draw();
+        frame++;
         setTimeout(step, 100);
       };
 
