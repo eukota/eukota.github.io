@@ -206,79 +206,75 @@ class UnwindApplet {
   }
 
   animate() {
-    // Animation sequence from original Java code
-    // Phase 1: Unwind the double helix
-    this.animateUnwind().then(() => {
-      // Phase 2: Separate the strands
-      return this.animateSeparate();
-    }).then(() => {
-      // Phase 3: Move strands apart vertically
-      return this.animateMoveSeparate();
+    this.animateUnwindAndSeparate().then(() => {
+      return this.animateRewind();
     });
   }
 
-  animateUnwind() {
+  setupStructure(dx) {
+    const dy = Math.round(20 * (90 - dx) / 45);
+    let a = 0;
+    let b = 135 - 4 * dx;
+    let c = 45 - 4 * dx;
+
+    // First strand (indices 0-23)
+    for (let i = -4 * dy; i <= 3 * dy; i += dy || 1) {
+      this.points[a][0] = i;
+      this.points[a][1] = 40 * Math.cos(b * Math.PI / 180);
+      this.points[a][2] = 40 * Math.sin(b * Math.PI / 180);
+      a++;
+      b += dx;
+
+      this.points[a][0] = i;
+      this.points[a][1] = 40 * Math.cos(c * Math.PI / 180);
+      this.points[a][2] = 40 * Math.sin(c * Math.PI / 180);
+      a++;
+      c += dx;
+    }
+
+    // Second strand (indices 24-47)
+    a = 0;
+    b = 135 + dx / 2 - 4 * dx;
+    c = 45 + dx / 2 - 4 * dx;
+    for (let i = -3.5 * dy; i <= 3.5 * dy; i += dy || 1) {
+      this.points[a + 24][0] = i;
+      this.points[a + 24][1] = 40 * Math.cos(b * Math.PI / 180);
+      this.points[a + 24][2] = 40 * Math.sin(b * Math.PI / 180);
+      a++;
+      b += dx;
+
+      this.points[a + 24][0] = i;
+      this.points[a + 24][1] = 40 * Math.cos(c * Math.PI / 180);
+      this.points[a + 24][2] = 40 * Math.sin(c * Math.PI / 180);
+      a++;
+      c += dx;
+    }
+
+    // Nucleotides (indices 48-71)
+    for (let i = 0; i <= 15; i += 2) {
+      this.points[i + 48][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) / 3;
+      this.points[i + 48][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) / 3;
+      this.points[i + 48][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) / 3;
+
+      this.points[i + 49][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) * 2 / 3;
+      this.points[i + 49][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) * 2 / 3;
+      this.points[i + 49][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) * 2 / 3;
+    }
+  }
+
+  animateUnwindAndSeparate() {
     return new Promise((resolve) => {
-      let frame = 0;
-      const totalFrames = 24;
+      let dx = 46;
 
       const step = () => {
-        if (frame > totalFrames) {
+        if (dx < 0) {
           resolve();
           return;
         }
 
-        const dy = Math.round(20 * (90 - frame * 2) / 45);
-        let a = 0;
-        let b = 135 - 4 * frame * 2;
-        let c = 45 - 4 * frame * 2;
-
-        // First strand (indices 0-23)
-        for (let i = -4 * dy; i <= 3 * dy; i += dy || 1) {
-          this.points[a][0] = i;
-          this.points[a][1] = 40 * Math.cos(b * Math.PI / 180);
-          this.points[a][2] = 40 * Math.sin(b * Math.PI / 180);
-          a++;
-          b += frame * 2;
-
-          this.points[a][0] = i;
-          this.points[a][1] = 40 * Math.cos(c * Math.PI / 180);
-          this.points[a][2] = 40 * Math.sin(c * Math.PI / 180);
-          a++;
-          c += frame * 2;
-        }
-
-        // Second strand (indices 24-47)
-        a = 0;
-        b = 135 + (frame * 2) / 2 - 4 * frame * 2;
-        c = 45 + (frame * 2) / 2 - 4 * frame * 2;
-        for (let i = -3.5 * dy; i <= 3.5 * dy; i += dy || 1) {
-          this.points[a + 24][0] = i;
-          this.points[a + 24][1] = 40 * Math.cos(b * Math.PI / 180);
-          this.points[a + 24][2] = 40 * Math.sin(b * Math.PI / 180);
-          a++;
-          b += frame * 2;
-
-          this.points[a + 24][0] = i;
-          this.points[a + 24][1] = 40 * Math.cos(c * Math.PI / 180);
-          this.points[a + 24][2] = 40 * Math.sin(c * Math.PI / 180);
-          a++;
-          c += frame * 2;
-        }
-
-        // Nucleotides (indices 48-71)
-        for (let i = 0; i <= 15; i += 2) {
-          this.points[i + 48][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) / 3;
-          this.points[i + 48][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) / 3;
-          this.points[i + 48][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) / 3;
-
-          this.points[i + 49][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) * 2 / 3;
-          this.points[i + 49][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) * 2 / 3;
-          this.points[i + 49][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) * 2 / 3;
-        }
-
+        this.setupStructure(dx);
         this.draw();
-        frame++;
+        dx -= 2;
         requestAnimationFrame(step);
       };
 
@@ -286,57 +282,19 @@ class UnwindApplet {
     });
   }
 
-  animateSeparate() {
+  animateRewind() {
     return new Promise((resolve) => {
-      let frame = 0;
-      const totalFrames = 40;
+      let dx = 0;
 
       const step = () => {
-        if (frame > totalFrames) {
+        if (dx > 46) {
           resolve();
           return;
         }
 
-        for (let i = 0; i <= 15; i++) {
-          if (i <= 5 || i === 7 || i === 9) {
-            this.points[i][0] -= 2;
-            this.points[i + 24][0] -= 2;
-            this.points[i + 48][0] -= 2;
-          } else {
-            this.points[i][0] += 2;
-            this.points[i + 24][0] += 2;
-            this.points[i + 48][0] += 2;
-          }
-        }
-
+        this.setupStructure(dx);
         this.draw();
-        frame++;
-        requestAnimationFrame(step);
-      };
-
-      step();
-    });
-  }
-
-  animateMoveSeparate() {
-    return new Promise((resolve) => {
-      let frame = 0;
-      const totalFrames = 70;
-
-      const step = () => {
-        if (frame > totalFrames) {
-          resolve();
-          return;
-        }
-
-        for (let i = 16; i <= 23; i++) {
-          this.points[i][1] -= 2;
-          this.points[i + 24][1] -= 2;
-          this.points[i + 48][1] -= 2;
-        }
-
-        this.draw();
-        frame++;
+        dx += 2;
         requestAnimationFrame(step);
       };
 
