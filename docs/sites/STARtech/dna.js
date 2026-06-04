@@ -7,7 +7,11 @@ class DNAApplet {
 
     this.AMOUNT = 48;
     this.points = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
+    this.originalPoints = Array(this.AMOUNT).fill(null).map(() => [0, 0, 0, 0, 0, 0, 0]);
     this.order = Array(this.AMOUNT).fill(-200);
+
+    this.rotationXZ = 0;
+    this.rotationYZ = 0;
 
     this.mouseDown = false;
     this.oldx = 0;
@@ -25,15 +29,23 @@ class DNAApplet {
 
     // Create first strand of backbone
     for (let i = -80; i <= 60; i += 20) {
-      this.points[a][0] = i;
-      this.points[a][1] = 40 * Math.cos(b * Math.PI / 180);
-      this.points[a][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a][0] = i;
+      this.originalPoints[a][1] = 40 * Math.cos(b * Math.PI / 180);
+      this.originalPoints[a][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a][3] = 200;
+      this.originalPoints[a][4] = 0;
+      this.originalPoints[a][5] = 0;
+      this.originalPoints[a][6] = 22;
       a++;
       b += 45;
 
-      this.points[a][0] = i;
-      this.points[a][1] = 40 * Math.cos(c * Math.PI / 180);
-      this.points[a][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a][0] = i;
+      this.originalPoints[a][1] = 40 * Math.cos(c * Math.PI / 180);
+      this.originalPoints[a][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a][3] = 200;
+      this.originalPoints[a][4] = 0;
+      this.originalPoints[a][5] = 0;
+      this.originalPoints[a][6] = 22;
       a++;
       c += 45;
     }
@@ -44,57 +56,77 @@ class DNAApplet {
     c = 112.5;
 
     for (let i = -70; i <= 70; i += 20) {
-      this.points[a + 16][0] = i;
-      this.points[a + 16][1] = 40 * Math.cos(b * Math.PI / 180);
-      this.points[a + 16][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a + 16][0] = i;
+      this.originalPoints[a + 16][1] = 40 * Math.cos(b * Math.PI / 180);
+      this.originalPoints[a + 16][2] = 40 * Math.sin(b * Math.PI / 180);
+      this.originalPoints[a + 16][3] = 0;
+      this.originalPoints[a + 16][4] = 0;
+      this.originalPoints[a + 16][5] = 200;
+      this.originalPoints[a + 16][6] = 18;
       a++;
       b += 45;
 
-      this.points[a + 16][0] = i;
-      this.points[a + 16][1] = 40 * Math.cos(c * Math.PI / 180);
-      this.points[a + 16][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a + 16][0] = i;
+      this.originalPoints[a + 16][1] = 40 * Math.cos(c * Math.PI / 180);
+      this.originalPoints[a + 16][2] = 40 * Math.sin(c * Math.PI / 180);
+      this.originalPoints[a + 16][3] = 0;
+      this.originalPoints[a + 16][4] = 0;
+      this.originalPoints[a + 16][5] = 200;
+      this.originalPoints[a + 16][6] = 18;
       a++;
       c += 45;
     }
 
     // Create nucleotides connecting strands
     for (let i = 0; i <= 15; i += 2) {
-      this.points[i + 32][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) / 3;
-      this.points[i + 32][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) / 3;
-      this.points[i + 32][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) / 3;
-
-      this.points[i + 33][0] = this.points[i][0] + (this.points[i + 1][0] - this.points[i][0]) * 2 / 3;
-      this.points[i + 33][1] = this.points[i][1] + (this.points[i + 1][1] - this.points[i][1]) * 2 / 3;
-      this.points[i + 33][2] = this.points[i][2] + (this.points[i + 1][2] - this.points[i][2]) * 2 / 3;
-    }
-
-    // Color first strand red
-    for (let i = 0; i <= 15; i++) {
-      this.points[i][3] = 200;
-      this.points[i][4] = 0;
-      this.points[i][5] = 0;
-      this.points[i][6] = 22;
-    }
-
-    // Color second strand blue
-    for (let i = 16; i <= 31; i++) {
-      this.points[i][3] = 0;
-      this.points[i][4] = 0;
-      this.points[i][5] = 200;
-      this.points[i][6] = 18;
-    }
-
-    // Color nucleotides random
-    for (let i = 32; i <= 47; i++) {
       const color_idx = Math.floor(Math.random() * 4);
       const colors = [
-        [100, 100, 0],    // yellow
-        [0, 100, 0],      // green
-        [0, 100, 100],    // cyan
-        [100, 0, 100]     // magenta
+        [100, 100, 0],
+        [0, 100, 0],
+        [0, 100, 100],
+        [100, 0, 100]
       ];
-      [this.points[i][3], this.points[i][4], this.points[i][5]] = colors[color_idx];
-      this.points[i][6] = 18;
+
+      this.originalPoints[i + 32][0] = this.originalPoints[i][0] + (this.originalPoints[i + 1][0] - this.originalPoints[i][0]) / 3;
+      this.originalPoints[i + 32][1] = this.originalPoints[i][1] + (this.originalPoints[i + 1][1] - this.originalPoints[i][1]) / 3;
+      this.originalPoints[i + 32][2] = this.originalPoints[i][2] + (this.originalPoints[i + 1][2] - this.originalPoints[i][2]) / 3;
+      [this.originalPoints[i + 32][3], this.originalPoints[i + 32][4], this.originalPoints[i + 32][5]] = colors[color_idx];
+      this.originalPoints[i + 32][6] = 18;
+
+      this.originalPoints[i + 33][0] = this.originalPoints[i][0] + (this.originalPoints[i + 1][0] - this.originalPoints[i][0]) * 2 / 3;
+      this.originalPoints[i + 33][1] = this.originalPoints[i][1] + (this.originalPoints[i + 1][1] - this.originalPoints[i][1]) * 2 / 3;
+      this.originalPoints[i + 33][2] = this.originalPoints[i][2] + (this.originalPoints[i + 1][2] - this.originalPoints[i][2]) * 2 / 3;
+      [this.originalPoints[i + 33][3], this.originalPoints[i + 33][4], this.originalPoints[i + 33][5]] = colors[3 - color_idx];
+      this.originalPoints[i + 33][6] = 18;
+    }
+
+    this.applyRotation();
+  }
+
+  applyRotation() {
+    for (let i = 0; i < this.AMOUNT; i++) {
+      const orig = this.originalPoints[i];
+      let x = orig[0];
+      let y = orig[1];
+      let z = orig[2];
+
+      // Apply XZ rotation (yaw)
+      const angle1 = this.rotationXZ * Math.PI / 180;
+      const x1 = x * Math.cos(angle1) - z * Math.sin(angle1);
+      const z1 = x * Math.sin(angle1) + z * Math.cos(angle1);
+
+      // Apply YZ rotation (pitch) on rotated coordinates
+      const angle2 = this.rotationYZ * Math.PI / 180;
+      const y2 = y * Math.cos(angle2) - z1 * Math.sin(angle2);
+      const z2 = y * Math.sin(angle2) + z1 * Math.cos(angle2);
+
+      this.points[i][0] = x1;
+      this.points[i][1] = y2;
+      this.points[i][2] = z2;
+      this.points[i][3] = orig[3];
+      this.points[i][4] = orig[4];
+      this.points[i][5] = orig[5];
+      this.points[i][6] = orig[6];
     }
   }
 
@@ -173,39 +205,13 @@ class DNAApplet {
   }
 
   rotateXZ(dx) {
-    for (let i = 0; i < this.AMOUNT; i++) {
-      const b = this.points[i][0];
-      let c = this.points[i][2];
-
-      let an = Math.atan2(b, c) * 180 / Math.PI;
-      if (b < 0 && c >= 0) an += 360;
-      if (b < 0 && c < 0) an += 180;
-      if (b >= 0 && c < 0) an += 180;
-
-      const m = Math.sqrt(b * b + c * c);
-      an += dx;
-
-      this.points[i][0] = m * Math.sin(an * Math.PI / 180);
-      this.points[i][2] = m * Math.cos(an * Math.PI / 180);
-    }
+    this.rotationXZ += dx;
+    this.applyRotation();
   }
 
   rotateYZ(dy) {
-    for (let i = 0; i < this.AMOUNT; i++) {
-      const b = this.points[i][1];
-      let c = this.points[i][2];
-
-      let an = Math.atan2(b, c) * 180 / Math.PI;
-      if (b < 0 && c >= 0) an += 360;
-      if (b < 0 && c < 0) an += 180;
-      if (b >= 0 && c < 0) an += 180;
-
-      const m = Math.sqrt(b * b + c * c);
-      an += dy;
-
-      this.points[i][1] = m * Math.sin(an * Math.PI / 180);
-      this.points[i][2] = m * Math.cos(an * Math.PI / 180);
-    }
+    this.rotationYZ += dy;
+    this.applyRotation();
   }
 
   onMouseDown(e) {
