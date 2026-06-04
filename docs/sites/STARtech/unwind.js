@@ -299,16 +299,22 @@ class UnwindApplet {
           return;
         }
 
+        // Separate strands
         for (let i = 0; i <= 15; i++) {
           if (i <= 5 || i === 7 || i === 9) {
             this.originalPoints[i][0] -= 3;
             this.originalPoints[i + 24][0] -= 3;
-            this.originalPoints[i + 48][0] -= 3;
           } else {
             this.originalPoints[i][0] += 3;
             this.originalPoints[i + 24][0] += 3;
-            this.originalPoints[i + 48][0] += 3;
           }
+        }
+
+        // Move nucleotide pairs together with their parent strand points
+        for (let i = 0; i <= 14; i += 2) {
+          const direction = (i <= 5 || i === 7 || i === 9) ? -3 : 3;
+          this.originalPoints[i + 48][0] += direction;
+          this.originalPoints[i + 49][0] += direction;
         }
 
         this.applyRotation();
@@ -332,10 +338,16 @@ class UnwindApplet {
           return;
         }
 
+        // Separate strands vertically
         for (let i = 16; i <= 23; i++) {
           this.originalPoints[i][1] -= 3;
           this.originalPoints[i + 24][1] -= 3;
+        }
+
+        // Move nucleotide pairs together (keep them with their parent strands)
+        for (let i = 0; i <= 14; i += 2) {
           this.originalPoints[i + 48][1] -= 3;
+          this.originalPoints[i + 49][1] -= 3;
         }
 
         this.applyRotation();
