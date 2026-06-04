@@ -299,7 +299,7 @@ class UnwindApplet {
           return;
         }
 
-        // Separate strands
+        // Separate strands horizontally - nucleotides stay visible between them
         for (let i = 0; i <= 15; i++) {
           if (i <= 5 || i === 7 || i === 9) {
             this.originalPoints[i][0] -= 3;
@@ -310,12 +310,7 @@ class UnwindApplet {
           }
         }
 
-        // Move nucleotide pairs together with their parent strand points
-        for (let i = 0; i <= 14; i += 2) {
-          const direction = (i <= 5 || i === 7 || i === 9) ? -3 : 3;
-          this.originalPoints[i + 48][0] += direction;
-          this.originalPoints[i + 49][0] += direction;
-        }
+        // Nucleotides stay in place to show the ladder structure
 
         this.applyRotation();
         this.draw();
@@ -338,17 +333,13 @@ class UnwindApplet {
           return;
         }
 
-        // Separate strands vertically
+        // Separate strands vertically - reveals the nucleotide ladder
         for (let i = 16; i <= 23; i++) {
           this.originalPoints[i][1] -= 3;
           this.originalPoints[i + 24][1] -= 3;
         }
 
-        // Move nucleotide pairs together (keep them with their parent strands)
-        for (let i = 0; i <= 14; i += 2) {
-          this.originalPoints[i + 48][1] -= 3;
-          this.originalPoints[i + 49][1] -= 3;
-        }
+        // Nucleotides stay in place, creating the "ladder" between separated strands
 
         this.applyRotation();
         this.draw();
