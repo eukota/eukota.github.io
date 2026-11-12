@@ -34,6 +34,7 @@ nav:
     - Family: personal/family.md
 - Sites: sites/sites.md
 - Engineering:
+    - AI: ai/index.md
     - UCSC Courses: engineering/ucsc_courses.md
     - HSU Courses: engineering/hsu_courses.md
     - UW Courses: engineering/uw_courses.md
@@ -63,6 +64,12 @@ nav:
         - Curators: documentation/per_project/curators.md
     - Patterns: documentation/patterns.md
     - Antipatterns: documentation/antipatterns.md
+- AI:
+    - ai/index.md
+    - AI Curriculums: ai/curriculums.md
+    - Claude Marketplace: ai/claude-marketplace.md
+    - Interviewing with AI: ai/interviewing.md
+    - AI Projects: ai/projects.md
 
 #####################
 # THEME
@@ -102,6 +109,7 @@ theme:
     features:
         - navigation.instant
         - navigation.tracking
+        - navigation.indexes
         - toc.follow
         #- toc.integrate
         - navigation.top
