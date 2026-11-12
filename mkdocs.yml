@@ -70,6 +70,8 @@ nav:
     - Claude Marketplace: ai/claude-marketplace.md
     - Interviewing with AI: ai/interviewing.md
     - AI Projects: ai/projects.md
+- Services:
+    - 3D Printing: services/3d-printing.md
 
 #####################
 # THEME
