@@ -115,14 +115,14 @@ details[open] summary{margin-bottom:14px}
 <p class="hint">An STL file has geometry but <strong>no slicer settings, infill, supports or print speed</strong>. The weight and time calculated from it are preliminary. For a reliable quote, slice the part (PrusaSlicer, OrcaSlicer, Cura) and enter its grams and hours.</p>
 </section>
 
-<section class="panel"><h2>2 · Job inputs</h2><div class="two">
+<section class="panel"><details id="jobInputs"><summary>2 · Job inputs <span class="hint" id="jobSum"></span></summary><div class="two">
 <label class="field"><span>Job name / customer</span><input id="jobName" placeholder="e.g. Replacement brackets" /></label>
 <label class="field"><span>Filament quality</span><select id="tier"><option value="std"></option><option value="plus"></option></select></label>
 <label class="field"><span>Material</span><select id="material"><option value="PETG">PETG</option><option value="PLA">PLA</option><option value="ABS">ABS</option><option value="ASA">ASA</option><option value="TPU">TPU</option><option value="Custom">Custom</option></select></label>
 <label class="field"><span>Print labor: slicing, setup, first layers, cleanup (minutes)</span><input id="laborMin" type="number" min="0" step="0.5" value="0" /></label>
 <label class="field"><span>Design / CAD time (hours)</span><input id="designHours" type="number" min="0" step="0.25" value="0" /></label>
 <label class="field"><span>Minimum job fee ($)</span><input id="minimum" type="number" min="0" step="1" value="10" /></label>
-</div><p class="hint" id="laborNote"></p><p class="hint">Per-part grams and hours are for one copy; quantity multiplies both. Design time is for modeling or fixing a part; it is zero when you bring a finished STL.</p></section>
+</div><p class="hint" id="laborNote"></p><p class="hint">Per-part grams and hours are for one copy; quantity multiplies both. Design time is for modeling or fixing a part; it is zero when you bring a finished STL.</p></details></section>
 
 <section class="panel"><details id="advanced"><summary>3 · Rates and estimation settings</summary>
 <p class="hint" id="rateNote" style="margin:0 0 12px"></p>
@@ -309,6 +309,8 @@ function syncLabor(){
   if(!rows.length)note.textContent='Labor is calculated from your parts once you add them: setup once per job, plus time for each part and each extra copy.';
   else if(laborOverride===null)note.textContent=`Calculated: ${fmtMin(settings.laborSetupMin)} min setup + ${fmtMin(settings.laborPartMin)} min × ${rows.length} part${rows.length===1?'':'s'}`+(rows.some(r=>r.qty>1)?` + ${fmtMin(settings.laborCopyMin)} min per extra copy`:'')+` = ${fmtMin(auto)} min. Edit the minutes to override, for example when parts need separate plates.`;
   else note.innerHTML=`Overridden by hand. Calculated time would be ${fmtMin(auto)} min. <button class="tiny" id="useCalc" type="button">Use calculated</button>`;
+  const tierOpt=$('#tier').selectedOptions[0];
+  $('#jobSum').textContent=`${tierOpt?tierOpt.text.replace(/\s*[,(–—·-].*$/,''):''} · ${fmtMin(value('#laborMin'))} min labor`+(value('#designHours')>0?` · ${number(value('#designHours'),2)} h design`:'');
 }
 function update(){
   syncLabor();
