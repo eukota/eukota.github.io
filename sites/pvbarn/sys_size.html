@@ -1,0 +1,68 @@
+<html>
+<head><title>Guntley Barn</title>
+<STYLE type="text/css">
+<!--
+A { text-decoration:none }
+-->
+</STYLE>
+</head>
+<body>
+
+<center>
+
+
+
+<table background="images/s_panelv1.gif" border=0 cellpadding=0>
+<tr><td colspan=5 width=700 height=100><center><h1><br>A Small Off-grid PV System</center></td></tr>
+
+<tr><td colspan=3 width=70 height=20></td><td colspan=2 width=630 align="right"> by Darrell Ross</td></tr>
+
+<tr><td width=10 height=450></td><td width=100 height=450 valign="top" align="left"><h4><br>
+<a href="home.html"><font color="#444444" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#444444'">Home</a><p>
+
+<a href="planning.html"><font color="#faaa00" onmouseover="this.style.color='#ffff00'" onmouseout="this.style.color='#faaa00'">Planning</a>
+<br>&nbsp;&nbsp;&nbsp;<a href="timeline.html"><font color="#444444" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#444444'">Timeline</a>
+<br>&nbsp;&nbsp;&nbsp;<font color="#ffff00">System Size</font>
+<br>&nbsp;&nbsp;&nbsp;<a href="panel_angles.html"><font color="#444444" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#444444'">Panel Angles</a>
+<p>
+<a href="installation.html"><font color="#444444" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#444444'">Installation</a>
+<p>
+<a href="reflections.html"><font color="#444444" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#444444'">Reflections</a><p>
+<a href="resources.html"><font color="#444444" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#444444'">Resources</a><p>
+<a href="update_2007.html"><font color="#009900" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='#009900'">Update: 2007</a></h3></td><td width=10 height=450></td>
+<td rowspan=0 width=655 height=450 valign="top">
+
+<!-- CONTENT AREA -->
+<table border=0 cellpadding=10><tr><td>
+<b>System Sizing</b>
+<br>The system size grew each time I changed the design but the point of this page is to demonstrate the process by which I determined my system size. The first step I took was to do a Load List Analysis. This consisted of writing down every possible load on the system<i>(Load)</i>, the wattage for each load<i>(watts)</i>, the number of hours in a day that the load would be active<i>(hrs/day)</i>, and the days per week the load would be used<i>(days/week)</i>.
+<p><img src="images/load_list.gif">
+<p>The watts multiplied by the hrs/day multiplied by the days/week and divided by seven days total gave the average watt hours per day<i>(ave wh/d)</i>. The <i>total wh/d consumed</i> is 1025 Whrs/day.
+<p>The next row, <i>pv "wh/d"</i>, takes into account the inefficiency of solar panels. Most panels are reputed to be about 80% efficient but just in case, I used an efficiency of 70%: 1025 divided by 0.70 = 1465 Whrs/day.
+ 
+<p>The next row, <i>pv amp hr/day @ 12V</i>, is the total pv wh/d divided by 12V yielding 122 Ahrs/day. This number reflects the number of amp hours the proposed system would use daily.
+<p>The next row, <i>pv amps in winter sun</i>, assumes three noon-hours for winter. Dividing 122 Ahrs/day by 3 gives 41 Ahrs. A noon hour is defined as an hour of full power production from a solar panel. Doug Livingston provided me with the numbers for my area: 7 noon-hours/day during the summer and 3 noon-hours/day during the winter.
+<p>Using the nominal voltage of photovoltaic panels, the <i>pv watts @ 17V</i> is 17 x 41 = 692 Whrs.
+<p>Using 120 watt solar panels, the <i>number of 120w pv</i> panels needed is 692 / 120 = 6.
+<p>In this design, the <i>Timer</i> and <i>Motion Sensor</i> were to run all the time and functioned as a way of turning the inverter on and off. In the final design, the inverter goes into a power-saving mode called search mode where it slowly searches for an AC load. In search mode, our inverter uses less than 1 watt which eliminated the need for the separate sensor and timer.
+<p>Every step of the way, our design errors on the side of caution. The final system calculations are noted below.
+<p><img src="images/load_list_2.gif">
+<p>Running through the calculations using a 24 volt system and the smaller number of loads gives the two 123 watt solar panels.
+<p><p><b>Battery Sizing</b>
+<br>Notice the <i>total wh/d consumed</i> is 590. The efficiency of the inverter I used is 90%. So 590 / 0.90 = 655 Watt hrs/day to produce the required 590 Watt hrs/day consumed by the system. For the 24 volt system, 590 / 24 = 27.3 Amp hrs/day. Using deep cycle batteries, the less I use of the battery each time, the longer they will last. I used four 6 volt 220 amp hour batteries in series creating 220 amp hours at 24 volts. The percentage of the battery bank used in one day is 27.3 / 220 = 12.4%. This is an extremely low use of the batteries. However, this system is off grid so if there is a three day long rain storm which is not at all uncommon for the area, then the batteries would be drained to 3 x 12.4 = 37.2%. This is still okay for deep cycle batteries.
+<p>All bases are covered... in theory.
+</td></tr></table>
+<!-- END CONTENT -->
+
+
+</td></tr>
+
+<tr><td width=10 height=10></td><td width=100 height=10></td><td width=10 height=10></td><td align="center"><font size=1>last updated August 26, 2005 at 7:35 PM</font</td></tr>
+
+
+</table>
+
+</center>
+
+</body>
+</html>

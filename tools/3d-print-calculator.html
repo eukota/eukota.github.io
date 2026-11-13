@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>3D Print Quote Calculator</title>
+<style>
+:root{
+  --text:#1d1b24;--muted:#5d586b;--panel:#f6f4fa;--panel2:#ece8f5;--line:#d4cde6;--field:#fff;
+  --accent:#5e35b1;--accent-ink:#fff;--good:#0a7d3b;--warn:#8a4b00;--bad:#b3261e;
+  font-family:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+[data-theme="dark"]{
+  --text:#e8e9ee;--muted:#a9adbb;--panel:#262a35;--panel2:#2e3340;--line:#434a5c;--field:#1e2129;
+  --accent:#b39ddb;--accent-ink:#1e1530;--good:#6fd69a;--warn:#ffcc80;--bad:#ff8a80;
+}
+*{box-sizing:border-box}
+body{margin:0;background:transparent;color:var(--text)}
+main{max-width:1150px;margin:auto;padding:6px 2px 24px}
+h1{font-size:clamp(1.5rem,3.5vw,2.1rem);letter-spacing:-.02em;margin:0 0 4px}
+h2{font-size:1.05rem;margin:0 0 14px}
+h3{font-size:.84rem;margin:10px 0 -3px;grid-column:1/-1;color:var(--accent);border-top:1px solid var(--line);padding-top:14px}
+p{line-height:1.5}
+.sub{color:var(--muted);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:18px;align-items:start}
+.stack{display:grid;gap:18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.drop{border:2px dashed var(--accent);border-radius:10px;padding:22px;text-align:center;background:var(--field);cursor:pointer;display:block;transition:.2s}
+.drop:hover,.drop.drag{background:var(--panel2)}
+.drop strong{display:block;margin:0 0 6px}
+.drop span{color:var(--muted);font-size:.86rem}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+.files{display:grid;gap:10px;margin-top:14px}
+.file{padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--field)}
+.file-title{display:flex;align-items:center;justify-content:space-between;gap:10px;overflow-wrap:anywhere;font-weight:600;font-size:.94rem}
+.meta{color:var(--muted);font-size:.81rem;margin:6px 0 10px;line-height:1.5}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.field{display:block;min-width:0}
+.field span{display:block;color:var(--muted);font-size:.78rem;margin:0 0 5px}
+.field input,.field select{width:100%;min-width:0;padding:8px 10px;background:var(--field);border:1px solid var(--line);color:var(--text);border-radius:7px;font:inherit;font-size:.9rem}
+.field input:disabled{opacity:.7;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hint{font-size:.77rem;color:var(--muted);margin:8px 0 0}
+.warn{color:var(--warn)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tiny{background:transparent;color:var(--accent);border:0;padding:3px;cursor:pointer;font:inherit;font-size:.8rem}
+.btns{display:flex;gap:9px;flex-wrap:wrap}
+.btn{background:var(--accent);color:var(--accent-ink);font-weight:700;border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font:inherit}
+.btn.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.btn:hover{filter:brightness(1.07)}
+.summary{position:sticky;top:12px}
+.price{font-size:clamp(2.2rem,5vw,3rem);letter-spacing:-.04em;font-weight:700;color:var(--accent);line-height:1.1;margin:6px 0}
+.breakdown{width:100%;border-collapse:collapse;font-size:.9rem;margin:14px 0}
+.breakdown td{padding:8px 0;border-bottom:1px solid var(--line)}
+.breakdown td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.breakdown .sub-row td{font-weight:600}
+.breakdown .total-row td{font-weight:700;font-size:1rem}
+.breakdown .note-row td{color:var(--muted);font-size:.8rem}
+.pill{display:inline-block;padding:3px 8px;border-radius:5px;background:var(--panel2);color:var(--accent);font-size:.73rem;font-weight:600}
+.numbers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.numbers div{background:var(--field);border-radius:8px;padding:10px;border:1px solid var(--line)}
+.numbers strong{font-size:1.1rem;display:block}
+.numbers small{color:var(--muted)}
+.market{background:var(--field);border:1px solid var(--line);border-left:4px solid var(--good);border-radius:8px;padding:10px 12px;font-size:.88rem;margin:10px 0;line-height:1.45}
+.callout{padding:10px 12px;background:var(--field);border-left:3px solid var(--warn);border-radius:6px;font-size:.83rem;line-height:1.5;margin-top:10px}
+.callout.maker{border-left-color:var(--accent)}
+.quote-notes{font-size:.81rem;color:var(--muted);margin:0}
+.empty{color:var(--muted);font-size:.85rem;text-align:center;padding:14px}
+.error{color:var(--bad);font-size:.8rem;margin:6px 0}
+details summary{cursor:pointer;color:var(--accent);font-weight:600}
+details[open] summary{margin-bottom:14px}
+.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#reference{margin-top:18px}
+#reference h3{border-top:0;padding-top:0;margin:18px 0 6px}
+#reference .tablewrap{overflow-x:auto}
+#reference table{width:100%;border-collapse:collapse;font-size:.86rem;margin:8px 0}
+#reference th,#reference td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+#reference th:first-child,#reference td:first-child{text-align:left}
+#reference ul{margin:6px 0;padding-left:1.2em;font-size:.88rem;line-height:1.55}
+#reference a{color:var(--accent)}
+.footer{color:var(--muted);font-size:.8rem;margin-top:18px}
+.print-only{display:none}
+.embedded h1{display:none}
+@media(max-width:870px){.grid{grid-template-columns:1fr}.summary{position:static}}
+@media(max-width:550px){.panel{padding:14px}.settings{grid-template-columns:repeat(2,minmax(0,1fr))}.three{grid-template-columns:1fr 1fr}.file .three>.field:nth-child(3){grid-column:1/-1}}
+@media print{
+  @page{margin:12mm}
+  :root,[data-theme="dark"]{--text:#000;--muted:#444;--panel:#fff;--panel2:#fff;--line:#bbb;--field:#fff;--accent:#2d1b69}
+  body{background:#fff;font-size:11pt}
+  h1{font-size:1.4rem}
+  .grid{display:block}
+  .stack,.btns,#reference,.footer,.sub,.callout,.numbers{display:none!important}
+  .panel{border:0;padding:0}
+  .summary{position:static;display:flex;flex-direction:column}
+  .summary .print-only{order:-2;margin:0 0 8px}
+  .summary .row{order:-1}
+  .price{font-size:2rem;margin:2px 0}
+  .breakdown{margin:8px 0}.breakdown td{padding:4px 0}
+  .market{break-inside:avoid;margin:6px 0}
+  .print-only{display:block;font-size:.9rem}
+  .print-only table{width:100%;border-collapse:collapse}
+  .print-only th,.print-only td{padding:4px 6px;border-bottom:1px solid #ccc;text-align:left}
+}
+</style>
+</head>
+<body><main>
+<header><h1>3D print quote calculator</h1><p class="sub">Drop in STL files, estimate material and print time, then refine with slicer results. Nothing is uploaded; every file stays in your browser.</p></header>
+<div class="grid"><div class="stack">
+
+<section class="panel"><h2>1 · Parts to print</h2>
+<label class="drop" id="drop"><strong>Drop STL files here or click to browse</strong><span>Binary and ASCII STL · multiple files supported · local processing</span><input class="sr-only" id="picker" type="file" accept=".stl,model/stl,application/sla" multiple /></label>
+<div class="files" id="files"><p class="empty">No files loaded. You can also add a manual part below.</p></div>
+<div class="btns" style="margin-top:13px"><button class="btn secondary" id="manual" type="button">+ Add manual part</button><button class="btn secondary" id="clear" type="button">Clear parts</button></div>
+<p class="hint">An STL file has geometry but <strong>no slicer settings, infill, supports or print speed</strong>. The weight and time calculated from it are preliminary. For a reliable quote, slice the part (PrusaSlicer, OrcaSlicer, Cura) and enter its grams and hours.</p>
+</section>
+
+<section class="panel"><details id="jobInputs"><summary>2 · Job inputs <span class="hint" id="jobSum"></span></summary><div class="two">
+<label class="field"><span>Job name / customer</span><input id="jobName" placeholder="e.g. Replacement brackets" /></label>
+<label class="field"><span>Filament quality</span><select id="tier"><option value="std"></option><option value="plus"></option></select></label>
+<label class="field"><span>Material</span><select id="material"><option value="PETG">PETG</option><option value="PLA">PLA</option><option value="ABS">ABS</option><option value="ASA">ASA</option><option value="TPU">TPU</option><option value="Custom">Custom</option></select></label>
+<label class="field"><span>Print labor: slicing, setup, first layers, cleanup (minutes)</span><input id="laborMin" type="number" min="0" step="0.5" value="0" /></label>
+<label class="field"><span>Design / CAD time (hours)</span><input id="designHours" type="number" min="0" step="0.25" value="0" /></label>
+<label class="field"><span>Minimum job fee ($)</span><input id="minimum" type="number" min="0" step="1" value="10" /></label>
+</div><p class="hint" id="laborNote"></p><p class="hint">Per-part grams and hours are for one copy; quantity multiplies both. Design time is for modeling or fixing a part; it is zero when you bring a finished STL.</p></details></section>
+
+<section class="panel"><details id="advanced"><summary>3 · Rates and estimation settings</summary>
+<p class="hint" id="rateNote" style="margin:0 0 12px"></p>
+<div class="settings" id="settings">
+<h3>Material and geometry approximation (STL estimates only)</h3>
+<label class="field"><span>Filament density (g/cm³)</span><input data-setting="density" type="number" min="0.5" step="0.01"></label>
+<label class="field"><span>Infill (%)</span><input data-setting="infill" type="number" min="0" max="100" step="1"></label>
+<label class="field"><span>Effective wall thickness (mm)</span><input data-setting="wallMm" type="number" min="0" step="0.2"></label>
+<label class="field"><span>Top/bottom thickness (mm)</span><input data-setting="roofMm" type="number" min="0" step="0.2"></label>
+<label class="field"><span>Support / waste allowance (%)</span><input data-setting="wastePct" type="number" min="0" step="1"></label>
+<h3>Print-time estimate (coarse; geometry cannot replace slicing)</h3>
+<label class="field"><span>Average extrusion flow (mm³/s)</span><input data-setting="flow" type="number" min="0.1" step="0.1"></label>
+<label class="field"><span>Extra time (%)</span><input data-setting="travelPct" type="number" min="0" step="5"></label>
+<label class="field"><span>Startup time per model (hours)</span><input data-setting="startupH" type="number" min="0" step="0.05"></label>
+<h3>Rates</h3>
+<label class="field"><span>Standard filament ($/kg)</span><input data-setting="filamentStd" data-biz="1" type="number" min="0" step="1"></label>
+<label class="field"><span>Standard Plus filament ($/kg)</span><input data-setting="filamentPlus" data-biz="1" type="number" min="0" step="1"></label>
+<label class="field"><span>Machine wear ($/hour)</span><input data-setting="machineHour" data-biz="1" type="number" min="0" step="0.05"></label>
+<label class="field"><span>Print labor ($/hour)</span><input data-setting="laborRate" data-biz="1" type="number" min="0" step="1"></label>
+<label class="field"><span>Design / CAD ($/hour)</span><input data-setting="designRate" data-biz="1" type="number" min="0" step="1"></label>
+<label class="field"><span>Electricity ($/kWh)</span><input data-setting="electricKwh" data-biz="1" type="number" min="0" step="0.01"></label>
+<label class="field"><span>Average printer draw (watts)</span><input data-setting="watts" data-biz="1" type="number" min="0" step="10"></label>
+<label class="field"><span>Consumables ($/job)</span><input data-setting="consumables" data-biz="1" type="number" min="0" step="0.05"></label>
+<label class="field"><span>Labor: setup per job (minutes)</span><input data-setting="laborSetupMin" data-biz="1" type="number" min="0" step="0.5"></label>
+<label class="field"><span>Labor: per part (minutes)</span><input data-setting="laborPartMin" data-biz="1" type="number" min="0" step="0.5"></label>
+<label class="field"><span>Labor: per extra copy (minutes)</span><input data-setting="laborCopyMin" data-biz="1" type="number" min="0" step="0.5"></label>
+<label class="field"><span>Failure / reprint reserve (%)</span><input data-setting="failurePct" data-biz="1" type="number" min="0" step="1"></label>
+<label class="field"><span>Printer fund / profit (%)</span><input data-setting="markupPct" data-biz="1" type="number" min="0" step="1"></label>
+<label class="field"><span>Target share of market price (%)</span><input data-setting="targetPct" data-biz="1" type="number" min="1" max="200" step="1"></label>
+<label class="field"><span>Quote rounding (up to nearest $)</span><input data-setting="roundTo" data-biz="1" type="number" min="0.01" step="1"></label>
+</div><div class="btns" style="margin-top:16px" id="resetRow"><button class="btn secondary" id="reset" type="button">Reset to published rates</button></div></details></section>
+</div>
+
+<aside class="panel summary" id="summary"><div class="row"><h2 style="margin:0">4 · Your quote</h2><span class="pill" id="quality">No parts yet</span></div>
+<div class="price" id="price">$0</div>
+<p class="quote-notes" id="quoteSub">Add STLs or a manual part to begin.</p>
+<div class="market" id="marketLine" hidden></div>
+<div class="numbers"><div><strong id="totalG">0 g</strong><small>Total filament</small></div><div><strong id="totalH">0 h</strong><small>Printer hours</small></div></div>
+<table class="breakdown" aria-label="Cost breakdown"><tbody id="breakdown"></tbody></table>
+<div class="callout" id="caution">STL-only quotes are rough. Before sending a final price, slice the parts and enter the slicer's filament weight and print hours above.</div>
+<div class="callout maker" id="makerNote" hidden></div>
+<div class="btns" style="margin-top:16px"><button class="btn" id="copy" type="button">Copy quote</button><button class="btn secondary" id="print" type="button">Print / PDF</button><button class="btn secondary" id="csv" type="button">Export CSV</button></div>
+<div class="print-only" id="printSheet"></div>
+</aside>
+</div>
+
+<section class="panel" id="reference"><details id="refDetails"><summary>How this price is built, and where the numbers come from</summary>
+<div id="refBody"></div></details></section>
+
+<p class="footer">Static, privacy-friendly calculator. Estimates are for quoting, not a substitute for actual slicing. The browser treats STL dimensions as millimeters; check units and model validity before relying on calculations. Prices exclude sales tax and shipping unless agreed.</p>
+</main>
+
+<script>
+'use strict';
+
+/* ---------- Published rates. Edit these; nothing here is secret. ---------- */
+const defaults={
+  filamentStd:14,filamentPlus:44,           // $/kg, landed cost rounded to the nearest dollar (Nov 2026 order)
+  machineHour:0.40,laborRate:35,designRate:35,    // $/hour. designRate is a placeholder until decided
+  electricKwh:0.50,watts:120,consumables:0.50,    // $/kWh, average watts, $/job
+  laborSetupMin:10,laborPartMin:7.5,laborCopyMin:2,   // hands-on minutes: once per job, per part, per extra copy (measured simple job: about 15-20 min)
+  failurePct:10,markupPct:15,targetPct:85,roundTo:1,
+  density:1.27,infill:15,wallMm:1.2,roofMm:.8,wastePct:16,flow:7,travelPct:30,startupH:.2   // STL estimate only
+};
+
+/* Market anchor: paste the contents of anchor.json here once real quotes are collected. */
+const ANCHOR=null;
+
+const MAKER=new URLSearchParams(location.search).has('maker');
+const STORE='printQuoteSettings.v2';
+const densities={PETG:1.27,PLA:1.24,ABS:1.04,ASA:1.07,TPU:1.21};
+
+let settings={...defaults};
+if(MAKER){try{const v=JSON.parse(localStorage.getItem(STORE)||'null');if(v&&typeof v==='object')settings={...settings,...v}}catch{}}
+let parts=[],counter=0;
+const $=s=>document.querySelector(s),money=x=>'$'+x.toFixed(2),number=(x,d=1)=>Number.isFinite(x)?x.toFixed(d):'—';
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function value(sel,fallback=0){const n=parseFloat($(sel).value);return Number.isFinite(n)?Math.max(0,n):fallback}
+function roundUp(x){const r=Math.max(.01,settings.roundTo);return Math.ceil(x/r-1e-9)*r}
+
+/* ---------- Settings UI ---------- */
+function syncSettings(){
+  document.querySelectorAll('[data-setting]').forEach(e=>{e.value=settings[e.dataset.setting];if(!MAKER&&e.dataset.biz)e.disabled=true});
+  const t=$('#tier');t.options[0].textContent=`Standard · $${settings.filamentStd}/kg`;t.options[1].textContent=`Standard Plus · $${settings.filamentPlus}/kg`;
+  syncMaterial();
+}
+function syncMaterial(){const m=Object.keys(densities).find(k=>Math.abs(densities[k]-settings.density)<.005);$('#material').value=m||'Custom'}
+function readSettings(){
+  document.querySelectorAll('[data-setting]').forEach(e=>{if(e.disabled)return;const v=parseFloat(e.value);if(Number.isFinite(v))settings[e.dataset.setting]=Math.max(0,v)});
+  if(MAKER){try{localStorage.setItem(STORE,JSON.stringify(settings))}catch{}}
+  syncMaterial();update();
+}
+
+/* ---------- STL parsing ---------- */
+function metrics(file){return new Promise((resolve,reject)=>{let reader=new FileReader();reader.onerror=()=>reject(new Error('Unable to read file'));reader.onload=()=>{try{resolve(parseSTL(reader.result))}catch(e){reject(e)}};reader.readAsArrayBuffer(file)})}
+function parseSTL(buf){if(buf.byteLength<50)throw Error('STL is too small');const dv=new DataView(buf), count=buf.byteLength>=84?dv.getUint32(80,true):0;
+const binary=buf.byteLength>=84&&84+count*50===buf.byteLength;
+let volume6=0,area2=0,min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity],triangles=0;
+function tri(a,b,c){for(const v of [a,b,c])for(let i=0;i<3;i++){if(!Number.isFinite(v[i]))throw Error('Invalid coordinates');min[i]=Math.min(min[i],v[i]);max[i]=Math.max(max[i],v[i])}
+const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],v=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],cross=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+area2+=Math.hypot(...cross);volume6+=a[0]*(b[1]*c[2]-b[2]*c[1])+a[1]*(b[2]*c[0]-b[0]*c[2])+a[2]*(b[0]*c[1]-b[1]*c[0]);triangles++}
+if(binary){if(count>2500000)throw Error('File has too many triangles (2.5M max)');for(let i=0;i<count;i++){let off=84+i*50+12;const coords=[];for(let j=0;j<3;j++){coords.push([dv.getFloat32(off,true),dv.getFloat32(off+4,true),dv.getFloat32(off+8,true)]);off+=12}tri(...coords)}}
+else{const txt=new TextDecoder().decode(buf);const re=/\bvertex\s+([-+\deE.]+)\s+([-+\deE.]+)\s+([-+\deE.]+)/gi;let match,vertices=[];while((match=re.exec(txt))!==null){vertices.push([Number(match[1]),Number(match[2]),Number(match[3])]);if(vertices.length===3){tri(...vertices);vertices=[]}if(triangles>2500000)throw Error('File has too many triangles (2.5M max)')}if(vertices.length)throw Error('Incomplete triangle vertices')}
+if(!triangles)throw Error('No STL triangles found');const dims=max.map((x,i)=>x-min[i]);const vol=Math.abs(volume6)/6;const area=area2/2;
+return{triangles,volumeMm3:vol,areaMm2:area,dims,problem:vol<1e-5||!Number.isFinite(vol)||!Number.isFinite(area)} }
+function estimate(p){if(!p.mesh)return{grams:0,hours:0};const m=p.mesh;const fullVol=m.volumeMm3;const shell=Math.min(fullVol,m.areaMm2*settings.wallMm);const rest=Math.max(0,fullVol-shell);const footprint=m.dims[0]*m.dims[1];const roof=Math.min(rest,2*footprint*settings.roofMm);const deposit=(shell+roof+(rest-roof)*Math.min(1,settings.infill/100))*(1+settings.wastePct/100);
+const grams=deposit/1000*settings.density;const hours=deposit/(Math.max(.1,settings.flow)*3600)*(1+settings.travelPct/100)+settings.startupH;
+return{grams,hours}}
+
+/* ---------- Pricing (pure: no DOM access) ---------- */
+function marketFor(rows){
+  if(!ANCHOR||!rows.length)return null;
+  const f=ANCHOR.formula;let m=0;
+  for(const r of rows)m+=f.setup+f.perGram*r.grams*r.qty+f.perHour*r.hours*r.qty;   // setup once per distinct part
+  return m>0?m:null;
+}
+function quote(rows,{laborH=0,designH=0,tierKey='std',minimum=0}={}){
+  const totalG=rows.reduce((s,r)=>s+r.grams*r.qty,0),totalH=rows.reduce((s,r)=>s+r.hours*r.qty,0);
+  const rate=tierKey==='plus'?settings.filamentPlus:settings.filamentStd;
+  const filament=totalG/1000*rate,machine=totalH*settings.machineHour,power=totalH*settings.watts/1000*settings.electricKwh;
+  const labor=laborH*settings.laborRate,fixed=rows.length?settings.consumables:0;
+  const base=filament+machine+power+labor+fixed;
+  const risk=base*settings.failurePct/100,profit=(base+risk)*settings.markupPct/100,floorRaw=base+risk+profit;
+  const market=marketFor(rows);
+  const delta=tierKey==='plus'?totalG/1000*(settings.filamentPlus-settings.filamentStd):0;   // upgrade passed through at cost
+  const targetRaw=market!==null?market*settings.targetPct/100+delta:null;
+  const belowFloor=targetRaw!==null&&targetRaw<floorRaw;
+  const raw=targetRaw!==null?Math.max(targetRaw,floorRaw):floorRaw;
+  const printing=rows.length?Math.max(minimum,roundUp(raw)):0;
+  const design=designH*settings.designRate;
+  let extrapolated=false;
+  if(ANCHOR&&ANCHOR.parts.length){const g=ANCHOR.parts.map(p=>p.grams),lo=Math.min(...g)*.75,hi=Math.max(...g)*1.25;extrapolated=rows.some(r=>r.grams<lo||r.grams>hi)}
+  return{totalG,totalH,rate,filament,machine,power,labor,fixed,base,risk,profit,floorRaw,market,delta,targetRaw,belowFloor,printing,design,total:printing+design,pct:market?printing/market:null,extrapolated};
+}
+
+/* ---------- Parts list ---------- */
+function makePart(name,mesh=null,err=''){return{id:++counter,name,mesh,error:err,qty:1,grams:null,hours:null}}
+let laborOverride=null;   // minutes typed by hand; null means use the calculated value
+function autoLaborMin(rows){   // setup once per job, handling per part, a little per extra copy
+  if(!rows.length)return 0;
+  return settings.laborSetupMin+rows.reduce((m,r)=>m+settings.laborPartMin+(r.qty-1)*settings.laborCopyMin,0);
+}
+const fmtMin=x=>String(+x.toFixed(1));
+function partRows(){
+  let unverified=false,missing=false;const rows=[];
+  for(const p of parts){const est=estimate(p);const qty=Math.max(1,Math.trunc(p.qty||1));
+    let grams=p.grams??(p.mesh&&!p.mesh.problem?est.grams:NaN),hours=p.hours??(p.mesh&&!p.mesh.problem?est.hours:NaN);
+    if(!Number.isFinite(grams)||!Number.isFinite(hours)){missing=true;grams=Number.isFinite(grams)?grams:0;hours=Number.isFinite(hours)?hours:0}
+    if(p.grams===null||p.hours===null)unverified=true;
+    rows.push({name:p.name,qty,grams,hours,dims:p.mesh?p.mesh.dims:null})}
+  return{rows,unverified,missing};
+}
+function renderParts(){const list=$('#files');if(!parts.length){list.innerHTML='<p class="empty">No files loaded. You can also add a manual part below.</p>';update();return}
+list.innerHTML=parts.map(p=>{const e=estimate(p),mesh=p.mesh;return `<div class="file" data-id="${p.id}"><div class="file-title"><span>${safe(p.name)}</span><button class="tiny" data-remove="${p.id}" title="Remove part">Remove ×</button></div><div class="meta">${mesh?`${number(mesh.dims[0])} × ${number(mesh.dims[1])} × ${number(mesh.dims[2])} mm · ${mesh.triangles.toLocaleString()} triangles · ${number(mesh.volumeMm3/1000,2)} cm³ solid volume`: 'Manual part'}${mesh&&mesh.problem?'<div class="warn">⚠ Mesh volume could not be trusted; slice this file to get actual data.</div>':''}${p.error?`<div class="error">${safe(p.error)}</div>`:''}</div><div class="three"><label class="field"><span>Quantity</span><input type="number" min="1" max="10000" step="1" data-p="qty" value="${p.qty}"></label><label class="field"><span>Grams / copy</span><input type="number" min="0" step="0.1" data-p="grams" value="${p.grams??''}" placeholder="${mesh&&!mesh.problem?number(e.grams,1):'From slicer'}"></label><label class="field"><span>Hours / copy</span><input type="number" min="0" step="0.1" data-p="hours" value="${p.hours??''}" placeholder="${mesh&&!mesh.problem?number(e.hours,1):'From slicer'}"></label></div><div class="hint">${p.grams===null||p.hours===null?'Empty fields use STL estimates, if available. Fill both from your slicer for an accurate quote.':'Slicer/manual values override STL estimates.'}</div></div>`}).join('');update()}
+function refreshPlaceholders(){   // keep STL-estimate placeholders in step with the settings
+  document.querySelectorAll('.file').forEach(el=>{const p=parts.find(p=>p.id===Number(el.dataset.id));if(!p||!p.mesh||p.mesh.problem)return;const e=estimate(p);
+    const g=el.querySelector('[data-p=grams]'),h=el.querySelector('[data-p=hours]');if(g)g.placeholder=number(e.grams,1);if(h)h.placeholder=number(e.hours,1)});
+}
+
+/* ---------- Rendering the quote ---------- */
+function calc(){
+  const pr=partRows(),q=quote(pr.rows,{laborH:value('#laborMin')/60,designH:value('#designHours'),tierKey:$('#tier').value,minimum:value('#minimum')});
+  return{...q,rows:pr.rows,unverified:pr.unverified,missing:pr.missing};
+}
+function breakdownRows(c){
+  const out=[];const R=(label,v,cls='')=>out.push({label,v,cls});
+  const tierName=$('#tier').value==='plus'?'Standard Plus':'Standard';
+  R(`Filament (${tierName}, $${c.rate}/kg)`,c.filament);R('Machine wear',c.machine);R('Electricity',c.power);R(`Print labor (${fmtMin(value('#laborMin'))} min × $${settings.laborRate}/h)`,c.labor);R('Consumables',c.fixed);
+  R('Failure / reprint reserve',c.risk);R('Printer fund / profit',c.profit);
+  R('Cost-based price',c.floorRaw,'sub-row');
+  if(c.market!==null){
+    R('Typical market price for these parts',c.market);
+    R(`At ${settings.targetPct}% of market${c.delta?' + Standard Plus filament upgrade':''}`,c.targetRaw,'sub-row');
+  }
+  R(c.market!==null?'Printing price (the higher of the two, rounded up)':'Printing price (rounded up)',c.printing,'sub-row');
+  if(c.design>0)R(`Design / CAD (${number(value('#designHours'),2)} h × $${settings.designRate})`,c.design);
+  R('Total',c.total,'total-row');
+  return out;
+}
+function syncLabor(){
+  const rows=partRows().rows,auto=autoLaborMin(rows);
+  if(laborOverride===null)$('#laborMin').value=fmtMin(auto);
+  const note=$('#laborNote');
+  if(!rows.length)note.textContent='Labor is calculated from your parts once you add them: setup once per job, plus time for each part and each extra copy.';
+  else if(laborOverride===null)note.textContent=`Calculated: ${fmtMin(settings.laborSetupMin)} min setup + ${fmtMin(settings.laborPartMin)} min × ${rows.length} part${rows.length===1?'':'s'}`+(rows.some(r=>r.qty>1)?` + ${fmtMin(settings.laborCopyMin)} min per extra copy`:'')+` = ${fmtMin(auto)} min. Edit the minutes to override, for example when parts need separate plates.`;
+  else note.innerHTML=`Overridden by hand. Calculated time would be ${fmtMin(auto)} min. <button class="tiny" id="useCalc" type="button">Use calculated</button>`;
+  const tierOpt=$('#tier').selectedOptions[0];
+  $('#jobSum').textContent=`${tierOpt?tierOpt.text.replace(/\s*[,(–—·-].*$/,''):''} · ${fmtMin(value('#laborMin'))} min labor`+(value('#designHours')>0?` · ${number(value('#designHours'),2)} h design`:'');
+}
+function update(){
+  syncLabor();
+  const c=calc(),enabled=parts.length&&!c.missing;
+  $('#quality').textContent=!parts.length?'No parts yet':c.missing?'Missing inputs':c.unverified?'STL estimate':'Slicer/manual';
+  $('#price').textContent=enabled?'$'+c.total.toFixed(c.total%1?2:0):'—';
+  $('#quoteSub').textContent=c.missing?'Enter weight and time for every manual or invalid part to calculate a quote.':!parts.length?'Add STLs or a manual part to begin.':`${parts.length} part${parts.length===1?'':'s'} · ${$('#jobName').value.trim()||'Untitled job'}`;
+  $('#totalG').textContent=number(c.totalG,1)+' g';$('#totalH').textContent=number(c.totalH,1)+' h';
+  $('#breakdown').innerHTML=enabled?breakdownRows(c).map(r=>`<tr class="${r.cls}"><td>${safe(r.label)}</td><td>${money(r.v)}</td></tr>`).join(''):'<tr class="note-row"><td colspan="2">The cost breakdown appears once every part has a weight and time.</td></tr>';
+  const ml=$('#marketLine');
+  if(enabled&&c.market!==null){
+    const saved=c.market-c.printing;
+    ml.hidden=false;
+    ml.textContent=(c.pct>1
+      ?`Comparable services typically charge about ${money(c.market)} for these parts. This price is higher because it includes my hands-on time; for small, simple parts an online service may be the better deal.`
+      :`Comparable services typically charge about ${money(c.market)} for these parts. Your printing price is ${Math.round(c.pct*100)}% of that${saved>0?`, a saving of ${money(saved)}`:''}.`)
+      +(c.extrapolated?' These parts are outside the range of the reference parts, so the comparison is less certain.':'');
+  }else ml.hidden=true;
+  const mn=$('#makerNote');
+  if(MAKER&&enabled&&c.market!==null&&c.belowFloor){mn.hidden=false;mn.textContent=`Maker note: at ${settings.targetPct}% of market this would be ${money(c.targetRaw)}, below your floor of ${money(c.floorRaw)} (costs, reserve and fund). The quote uses the floor, which is ${Math.round(c.pct*100)}% of market. Offering the lower price would be a favor of ${money(c.floorRaw-c.targetRaw)}.`}
+  else if(MAKER&&enabled&&c.market===null){mn.hidden=false;mn.textContent='Maker note: no market reference is loaded, so this price is cost-based. Add quotes and paste anchor.json into the ANCHOR constant.'}
+  else mn.hidden=true;
+  $('#caution').textContent=c.missing?'Some parts lack usable STL geometry or weight/time inputs. Add slicer estimates for those files.':c.unverified?'Preliminary estimate only. STL files do not contain slicing settings, toolpaths or support structures. Replace estimated grams and hours with slicer values before relying on this price.':'All parts have explicit weight and time inputs. Confirm your settings, quantity and any special design or shipping work before sending.';
+  refreshPlaceholders();renderPrintSheet(c,enabled);
+}
+function renderPrintSheet(c,enabled){
+  const el=$('#printSheet');if(!enabled){el.innerHTML='';return}
+  const d=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  const dims=r=>r.dims?r.dims.map(x=>number(x,0)).join(' × ')+' mm':'—';
+  el.innerHTML=`<p><strong>${safe($('#jobName').value.trim()||'Untitled job')}</strong> · ${d}<br>Material: ${safe($('#material').value)} · ${$('#tier').value==='plus'?'Standard Plus':'Standard'} filament${c.unverified?'<br><strong>Preliminary: estimated from STL geometry.</strong>':''}</p>
+<table><thead><tr><th>Part</th><th>Qty</th><th>Size</th><th>Grams / copy</th><th>Hours / copy</th></tr></thead><tbody>${c.rows.map(r=>`<tr><td>${safe(r.name)}</td><td>${r.qty}</td><td>${dims(r)}</td><td>${number(r.grams,1)}</td><td>${number(r.hours,2)}</td></tr>`).join('')}</tbody></table>
+<p>Excludes shipping and sales tax unless agreed.</p>`;
+}
+
+/* ---------- Reference section ---------- */
+function refPrice(p){   // what this tool would charge for one reference part, standard filament
+  const q=quote([{grams:p.grams,hours:p.hours,qty:1}],{laborH:p.laborH??(settings.laborSetupMin+settings.laborPartMin)/60,tierKey:'std',minimum:value('#minimum')});return q;
+}
+function renderReference(){
+  const a=ANCHOR;let market;
+  if(!a)market='<p>The market comparison has not been loaded yet, so quotes are currently cost-based only.</p>';
+  else{
+    const f=a.formula;
+    market=`<p>For the same parts, comparable services charge roughly <strong>$${f.setup.toFixed(2)} setup + $${f.perGram.toFixed(3)} per gram</strong>${f.perHour?` + $${f.perHour.toFixed(2)} per hour`:''}. That formula was fitted to real quotes collected ${safe(a.generated)} (${a.basis==='delivered'?'price plus shipping':'item price only'}).</p>
+<div class="tablewrap"><table><thead><tr><th>Reference part</th><th>Grams</th><th>Hours</th><th>Market (median)</th><th>Range</th><th>This tool</th><th>Share</th></tr></thead><tbody>${a.parts.map(p=>{const q=refPrice(p);return `<tr><td>${safe(p.part)}</td><td>${number(p.grams,0)}</td><td>${number(p.hours,1)}</td><td>${money(p.median)}</td><td>${money(p.min)}–${money(p.max)}</td><td>${money(q.printing)}</td><td>${Math.round(q.printing/p.median*100)}%</td></tr>`}).join('')}</tbody></table></div>
+<p class="hint">The "This tool" column uses standard filament, the rates above, and each part's hands-on time (${fmtMin(settings.laborSetupMin+settings.laborPartMin)} minutes for one part unless noted).</p>`;
+  }
+  $('#refBody').innerHTML=`<h3>How the price is built</h3>
+<ul>
+<li><strong>Costs:</strong> filament, machine wear, electricity, my labor, and a small per-job amount for consumables. These are all itemized in the quote.</li>
+<li><strong>Reserve and fund:</strong> a failure reserve (${settings.failurePct}%) for reprints, and a ${settings.markupPct}% printer fund that goes toward a second printer.</li>
+${a?`<li><strong>Market check:</strong> I look at what comparable services charge for the same part and aim for about ${settings.targetPct}% of that. If my costs are higher than that, I charge my costs and the quote says so.</li>`:`<li><strong>Market check:</strong> not added yet. For now every quote is cost-based, with each line shown.</li>`}
+<li><strong>Standard Plus:</strong> uses premium Prusament filament. The extra filament cost is passed through at cost.</li>
+<li><strong>Design / CAD:</strong> modeling or fixing a part is billed separately, by the hour.</li>
+</ul>
+<h3>Market reference</h3>${market}
+<h3>Where the inputs come from</h3>
+<p class="hint">Checked November 2026. Most published figures are blogs or vendor guides; prices move, so my own purchases and bills are used wherever possible.</p>
+<ul>
+<li><strong>Filament:</strong> my own purchase prices plus shipping and tax, rounded to the nearest dollar. For context, <a href="https://spoolprices.com/en-GB/filament">SpoolPrices</a> compares filament prices.</li>
+<li><strong>Electricity:</strong> my own bill. Regional estimates: <a href="https://www.energysage.com/local-data/electricity-cost/ca/humboldt-county/">EnergySage, Humboldt County</a> and <a href="https://redwoodenergy.org/wp-content/uploads/sites/850/2026/01/Website-Rate-Sheets-_Feb.-2026_Residential.pdf">RCEA 2026 rate sheet</a>.</li>
+<li><strong>Printer wear:</strong> printer price divided by expected life, plus nozzles and maintenance. Method: <a href="https://blog.snapmaker.com/blog/how-to-calculate-your-3d-printing-costs/">Snapmaker</a> and <a href="https://www.filaquote.com/guides/3d-printer-cost-per-hour/">Filaquote</a>. Maintenance: <a href="https://help.prusa3d.com/article/regular-printer-maintenance-mk4-s-mk3-9-s_419000">Prusa maintenance guide</a>, <a href="https://help.prusa3d.com/article/faq-frequently-asked-questions_1932">Prusa FAQ</a>. Printer price: <a href="https://stacksheriff.com/3d-printing/prusa-buyers-guide/">Stacksheriff</a>, <a href="https://frontdeskreview.com/product/3d-printers/prusa-mk4s/">Front Desk Review</a>.</li>
+<li><strong>Labor:</strong> hourly range informed by California's <a href="https://hrwatchdog.calchamber.com/2025/08/californias-2026-minimum-wage-increases-to-16-90-per-hour/">$16.90 minimum wage</a>, machinist wages (<a href="https://www.bls.gov/oes/">BLS</a>), and <a href="https://layermath.com/blog/3d-printing-hourly-rate">seller hourly-rate guides</a>.</li>
+<li><strong>Failure rate:</strong> <a href="https://core.ac.uk/works/40652082">a study of FDM material waste</a> and <a href="https://3dprinterly.com/3d-print-failures-why-do-they-fail-how-often/">a hobbyist guide</a>. I use my own results as I collect them.</li>
+<li><strong>Market prices:</strong> <a href="https://3dprinting.com/how-much-does-3d-printing-cost/">3dprinting.com</a>, <a href="https://www.printpal.io/wiki/3d-printing-cost-guide">PrintPal</a>, <a href="https://www.find3dprinting.com/blog/3d-printing-cost-calculator">Find3DPrinting</a> and <a href="https://3dprintbounty.com/blog/craftcloud-review">3DPrintBounty's Craftcloud review</a> give published ranges. Real quotes from <a href="https://craftcloud3d.com">Craftcloud</a> and other services set the comparison above.</li>
+</ul>
+<h3>What this does not cover</h3>
+<ul><li>Sales tax, shipping, and rush work.</li><li>Parts that need heavy supports, special materials, or finishing. Those get a custom quote.</li><li>Weights and times estimated from an STL alone. They are rough until sliced.</li></ul>`;
+}
+
+/* ---------- Events ---------- */
+async function addFiles(files){for(const file of files){if(!file.name.toLowerCase().endsWith('.stl'))continue;let p=makePart(file.name);try{p.mesh=await metrics(file)}catch(e){p.error=e.message}parts.push(p);renderParts()}}
+$('#picker').addEventListener('change',async e=>{await addFiles([...e.target.files]);e.target.value=''});
+const drop=$('#drop');for(const type of ['dragenter','dragover'])drop.addEventListener(type,e=>{e.preventDefault();drop.classList.add('drag')});for(const type of ['dragleave','drop'])drop.addEventListener(type,e=>{e.preventDefault();drop.classList.remove('drag')});drop.addEventListener('drop',e=>addFiles([...e.dataTransfer.files]));
+$('#files').addEventListener('input',e=>{const el=e.target,field=el.dataset.p;if(!field)return;const p=parts.find(p=>p.id===Number(el.closest('.file').dataset.id));if(!p)return;const n=el.value===''?null:Number(el.value);if(field==='qty')p.qty=n===null?1:Math.max(1,Math.floor(n));else p[field]=n===null?null:Math.max(0,n);update()});
+$('#files').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b){parts=parts.filter(p=>p.id!==Number(b.dataset.remove));renderParts()}});
+$('#manual').addEventListener('click',()=>{parts.push(makePart('Manual part '+(counter+1)));renderParts()});$('#clear').addEventListener('click',()=>{parts=[];renderParts()});
+for(const id of ['designHours','minimum','jobName','tier'])$('#'+id).addEventListener('input',update);
+$('#laborMin').addEventListener('input',e=>{laborOverride=e.target.value===''?null:Math.max(0,Number(e.target.value)||0);update()});
+document.addEventListener('click',e=>{if(e.target.id==='useCalc'){laborOverride=null;update()}});
+$('#material').addEventListener('change',e=>{const m=e.target.value;if(densities[m]){settings.density=densities[m];document.querySelector('[data-setting=density]').value=settings.density;readSettings()}});
+$('#settings').addEventListener('input',readSettings);
+$('#reset').addEventListener('click',()=>{settings={...defaults};syncSettings();readSettings()});
+
+function quoteText(){
+  const c=calc();if(!parts.length||c.missing)return null;
+  const lines=[`3D PRINT QUOTE — ${$('#jobName').value.trim()||'Untitled job'}`,`Material: ${$('#material').value} · ${$('#tier').value==='plus'?'Standard Plus':'Standard'} filament`,
+    ...c.rows.map(p=>`${p.qty} × ${p.name}: ${number(p.grams,1)} g and ${number(p.hours,2)} h per copy`),
+    `Total: ${number(c.totalG,1)} g; ${number(c.totalH,2)} printer hours`];
+  for(const r of breakdownRows(c))lines.push(`${r.label}: ${money(r.v)}`);
+  if(c.market!==null&&c.pct<=1)lines.push(`Printing price is ${Math.round(c.pct*100)}% of the typical market price.`);
+  lines.push(c.unverified?'PRELIMINARY — STL-derived estimate; verify with slicer':'Based on manually entered/slicer measurements','Excludes shipping and sales tax unless agreed.');
+  return lines.join('\n');
+}
+$('#copy').addEventListener('click',async e=>{const t=quoteText();if(!t){alert('Add parts and complete missing inputs before copying a quote.');return}try{await navigator.clipboard.writeText(t);e.target.textContent='Copied!';setTimeout(()=>e.target.textContent='Copy quote',1700)}catch{prompt('Copy this quote:',t)}});
+$('#print').addEventListener('click',()=>window.print());
+function csvEscape(s){return '"'+String(s).replace(/"/g,'""')+'"'}
+$('#csv').addEventListener('click',()=>{const c=calc();if(!parts.length||c.missing){alert('Add parts and complete missing inputs before exporting.');return}
+  const lines=[['Job',$('#jobName').value],['Material',$('#material').value],['Filament quality',$('#tier').value==='plus'?'Standard Plus':'Standard'],['Part','Quantity','Grams per copy','Hours per copy'],...c.rows.map(p=>[p.name,p.qty,p.grams,p.hours]),['Total grams',c.totalG],['Total printer hours',c.totalH],...breakdownRows(c).map(r=>[r.label,r.v]),['Share of typical market price',c.pct===null?'':c.pct],['Estimate only',c.unverified]];
+  const blob=new Blob([lines.map(row=>row.map(csvEscape).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='3d-print-quote.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)});
+
+/* ---------- Fit into the host page (same-origin iframe) ---------- */
+function applyTheme(){
+  let scheme=null;try{if(window.parent!==window)scheme=window.parent.document.body.getAttribute('data-md-color-scheme')}catch{}
+  const dark=scheme?scheme==='slate':matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.dataset.theme=dark?'dark':'light';
+}
+if(window.parent!==window)document.documentElement.classList.add('embedded');
+applyTheme();
+try{new MutationObserver(applyTheme).observe(window.parent.document.body,{attributes:true,attributeFilter:['data-md-color-scheme']})}catch{}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+function fitFrame(){try{const f=window.frameElement;if(f)f.style.height=(document.documentElement.scrollHeight+4)+'px'}catch{}}
+if(typeof ResizeObserver!=='undefined')new ResizeObserver(fitFrame).observe(document.body);
+
+/* ---------- Start ---------- */
+$('#rateNote').textContent=MAKER?'Maker mode: rate edits are saved in this browser only.':'These are the published rates, shown so every quote can be checked. Estimation settings can be adjusted for this session.';
+$('#resetRow').hidden=!MAKER;
+syncSettings();renderReference();renderParts();fitFrame();
+</script></body></html>
