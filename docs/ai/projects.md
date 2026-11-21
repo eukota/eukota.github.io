@@ -18,3 +18,9 @@ A photo booth for Kinetic events, built for the Haunted Lab of Horrors haunted h
 Each event gets its own theme across the booth, the gallery and the photo page. The haunted one has dripping slime, rotten-plum curtains, a flickering green marquee and a Creepster font. A kiosk mode gives each group of guests a session, so they only see their own photos instead of everyone's. The whole thing runs serverless on AWS, and it can run on a laptop for testing. Paid downloads are planned as a separate project.
 
 The code is in a private repository for now.
+
+## Job Search Agent
+
+A job board that scrapes company career pages on a schedule and keeps one searchable catalog. A GitHub Actions pipeline runs twice a day on weekdays. It pulls from Greenhouse, Ashby, Lever, Workday and Eightfold, classifies each role by level, function and workplace, and drops postings once they close. The front end is a static page with filters, hosted on GitHub Pages.
+
+[Open the job board](https://eukota.github.io/job-search-agent/) · [Source on GitHub](https://github.com/eukota/job-search-agent)
